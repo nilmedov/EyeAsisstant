@@ -1,6 +1,10 @@
 package com.hackathon.healthtech.eyeassistant;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -58,6 +62,42 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 	@Override
 	public void onResume() {
 		super.onResume();
-		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_1_0, this, mLoaderCallback);
+
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+			if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+				ActivityCompat.requestPermissions(this,
+						new String[]{Manifest.permission.CAMERA},
+						1);
+			}
+		} else {
+			OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_1_0, this, mLoaderCallback);
+		}
 	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode,
+										   String permissions[], int[] grantResults) {
+		switch (requestCode) {
+			case 1: {
+				// If request is cancelled, the result arrays are empty.
+				if (grantResults.length > 0
+						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+					// permission was granted, yay! Do the
+					// contacts-related task you need to do.
+					OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_1_0, this, mLoaderCallback);
+
+				} else {
+
+					// permission denied, boo! Disable the
+					// functionality that depends on this permission.
+				}
+				return;
+			}
+
+			// other 'case' lines to check for other
+			// permissions this app might request
+		}
+	}
+
 }
