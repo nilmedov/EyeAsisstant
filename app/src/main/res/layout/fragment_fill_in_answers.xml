@@ -1,0 +1,50 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fill in answers"/>
+
+    <EditText
+        android:id="@+id/f_answer_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:singleLine="true"
+        android:imeOptions="actionNext"/>
+
+    <EditText
+        android:id="@+id/f_answer_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:singleLine="true"
+        android:imeOptions="actionNext"/>
+
+    <EditText
+        android:id="@+id/f_answer_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:imeOptions="actionNext"
+        android:singleLine="true"/>
+
+    <EditText
+        android:id="@+id/f_answer_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_next"
+        android:layout_alignParentBottom="true"
+        android:text="@string/next"/>
+
+</LinearLayout>

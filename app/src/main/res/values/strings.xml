@@ -1,3 +1,18 @@
 <resources>
-	<string name="app_name">EyeAssistant</string>
+    <string name="app_name">EyeAssistant</string>
+    <string name="nearby_service_id">com.hackathon.healthtech.eyeassistant.service</string>
+    <string name="advertise">Advertise</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="discover">Discover</string>
+    <string name="debug_label">DEBUG</string>
+    <string name="send">Send</string>
+    <string name="message">Message</string>
+
+    <string name="title_activity_question">QuestionActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="next">Next</string>
 </resources>

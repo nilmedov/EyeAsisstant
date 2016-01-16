@@ -1,13 +1,15 @@
-package com.hackathon.healthtech.eyeassistant;
+package com.hackathon.healthtech.eyeassistant.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.hackathon.healthtech.eyeassistant.R;
+
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
-import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
 
 public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener {
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		startActivity(new Intent(this, FillInActivity.class));
+		finish();
 
 		mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.camera_view);
 	}
@@ -58,6 +62,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 	@Override
 	public void onResume() {
 		super.onResume();
-		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_1_0, this, mLoaderCallback);
+//		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_1_0, this, mLoaderCallback);
 	}
 }
