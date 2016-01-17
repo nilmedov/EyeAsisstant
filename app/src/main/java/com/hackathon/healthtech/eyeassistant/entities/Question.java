@@ -10,14 +10,16 @@ import java.util.List;
  */
 public class Question implements Parcelable {
     private String question;
-    private List<Answer> answers;
+    private Answer answerFirst;
+    private Answer answerSecond;
+    private Answer answerThird;
+    private Answer answerFourth;
 
     public Question() {
     }
 
-    public Question(String question, List<Answer> answers) {
+    public Question(String question) {
         this.question = question;
-        this.answers = answers;
     }
 
     public String getQuestion() {
@@ -28,13 +30,38 @@ public class Question implements Parcelable {
         this.question = question;
     }
 
-    public List<Answer> getAnswers() {
-        return answers;
+    public Answer getAnswerFirst() {
+        return answerFirst;
     }
 
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
+    public void setAnswerFirst(Answer answerFirst) {
+        this.answerFirst = answerFirst;
     }
+
+    public Answer getAnswerSecond() {
+        return answerSecond;
+    }
+
+    public void setAnswerSecond(Answer answerSecond) {
+        this.answerSecond = answerSecond;
+    }
+
+    public Answer getAnswerThird() {
+        return answerThird;
+    }
+
+    public void setAnswerThird(Answer answerThird) {
+        this.answerThird = answerThird;
+    }
+
+    public Answer getAnswerFourth() {
+        return answerFourth;
+    }
+
+    public void setAnswerFourth(Answer answerFourth) {
+        this.answerFourth = answerFourth;
+    }
+
 
     @Override
     public int describeContents() {
@@ -44,15 +71,21 @@ public class Question implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.question);
-        dest.writeTypedList(answers);
+        dest.writeParcelable(this.answerFirst, 0);
+        dest.writeParcelable(this.answerSecond, 0);
+        dest.writeParcelable(this.answerThird, 0);
+        dest.writeParcelable(this.answerFourth, 0);
     }
 
     protected Question(Parcel in) {
         this.question = in.readString();
-        this.answers = in.createTypedArrayList(Answer.CREATOR);
+        this.answerFirst = in.readParcelable(Answer.class.getClassLoader());
+        this.answerSecond = in.readParcelable(Answer.class.getClassLoader());
+        this.answerThird = in.readParcelable(Answer.class.getClassLoader());
+        this.answerFourth = in.readParcelable(Answer.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<Question> CREATOR = new Parcelable.Creator<Question>() {
+    public static final Creator<Question> CREATOR = new Creator<Question>() {
         public Question createFromParcel(Parcel source) {
             return new Question(source);
         }

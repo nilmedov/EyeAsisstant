@@ -4,5 +4,9 @@
 	<color name="colorPrimaryDark">#303F9F</color>
 	<color name="colorAccent">#47ceca</color>
 
-    <color name="black_overlay">#66000000</color>
+    <color name="black_overlay">#cd000000</color>
+	<color name="bg_default_btn">#07000000</color>
+	<color name="bg_default_btn_pressed">#09000508</color>
+	<color name="default_text_color">#ffffff</color>
+	<color name="default_text_color_with_opacity">#cdffffff</color>
 </resources>

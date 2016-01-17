@@ -2,25 +2,31 @@ package com.hackathon.healthtech.eyeassistant.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.lzyzsd.circleprogress.ArcProgress;
 import com.hackathon.healthtech.eyeassistant.R;
-import com.hackathon.healthtech.eyeassistant.entities.Answer;
 import com.hackathon.healthtech.eyeassistant.entities.Question;
 
 public class QuestionFragment extends Fragment implements View.OnClickListener {
+    private static final String TAG = QuestionFragment.class.getSimpleName();
     private Question mQuestion;
     private TextView txtMessage;
     private TextView txtAnswer1, txtAnswer2, txtAnswer3, txtAnswer4;
+    private ArcProgress pbAnswer1, pbAnswer2, pbAnswer3, pbAnswer4;
 
 
     private OnFragmentInteractionListener mListener;
+    private RelativeLayout containerAnswers;
+    private CountDownTimer countDownTimer;
 
     public QuestionFragment() {
         // Required empty public constructor
@@ -52,21 +58,36 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        containerAnswers = (RelativeLayout) view.findViewById(R.id.container_answers);
+        ViewGroup.LayoutParams layoutParams = containerAnswers.getLayoutParams();
+        layoutParams.height = layoutParams.width;
+        containerAnswers.setLayoutParams(layoutParams);
+
+        txtMessage = (TextView) view.findViewById(R.id.txt_message);
         txtMessage = (TextView) view.findViewById(R.id.txt_message);
         (txtAnswer1 = (TextView) view.findViewById(R.id.txt_answer_1)).setOnClickListener(this);
         (txtAnswer2 = (TextView) view.findViewById(R.id.txt_answer_2)).setOnClickListener(this);
         (txtAnswer3 = (TextView) view.findViewById(R.id.txt_answer_3)).setOnClickListener(this);
         (txtAnswer4 = (TextView) view.findViewById(R.id.txt_answer_4)).setOnClickListener(this);
-        if (mQuestion != null && !TextUtils.isEmpty(mQuestion.getQuestion()))
-            txtMessage.setText(mQuestion.getQuestion());
+
+
+        pbAnswer1 = (ArcProgress) view.findViewById(R.id.pb_answer_1);
+        pbAnswer2 = (ArcProgress) view.findViewById(R.id.pb_answer_2);
+        pbAnswer3 = (ArcProgress) view.findViewById(R.id.pb_answer_3);
+        pbAnswer4 = (ArcProgress) view.findViewById(R.id.pb_answer_4);
+        if (mQuestion == null) {
+            return;
+        }
+        setUpText(txtMessage, mQuestion.getQuestion());
+        setUpText(txtAnswer1, mQuestion.getAnswerFirst().getMessage());
+        setUpText(txtAnswer2, mQuestion.getAnswerSecond().getMessage());
+        setUpText(txtAnswer3, mQuestion.getAnswerThird().getMessage());
+        setUpText(txtAnswer4, mQuestion.getAnswerFourth().getMessage());
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(int position) {
-        if (mListener != null) {
-            mListener.onAnswerSelected(
-                    mQuestion.getAnswers().get(position));
-        }
+    private void setUpText(TextView textView, String message) {
+        if (!TextUtils.isEmpty(message))
+            textView.setText(message);
     }
 
     @Override
@@ -88,24 +109,69 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        stopTimer();
         switch (v.getId()) {
             case R.id.txt_answer_1:
-                onButtonPressed(0);
+                showProgressBar(pbAnswer1, 1);
+                pbAnswer2.setProgress(0);
+                pbAnswer3.setProgress(0);
+                pbAnswer4.setProgress(0);
                 break;
             case R.id.txt_answer_2:
-                onButtonPressed(1);
+                showProgressBar(pbAnswer2, 2);
+                pbAnswer1.setProgress(0);
+                pbAnswer3.setProgress(0);
+                pbAnswer4.setProgress(0);
                 break;
             case R.id.txt_answer_3:
-                onButtonPressed(2);
+                showProgressBar(pbAnswer3, 3);
+                pbAnswer1.setProgress(0);
+                pbAnswer2.setProgress(0);
+                pbAnswer4.setProgress(0);
                 break;
             case R.id.txt_answer_4:
-                onButtonPressed(3);
+                showProgressBar(pbAnswer4, 4);
+                pbAnswer1.setProgress(0);
+                pbAnswer2.setProgress(0);
+                pbAnswer3.setProgress(0);
                 break;
         }
     }
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onAnswerSelected(Answer answer);
+        void onAnswerSelected(int posiion);
     }
+
+    private void showProgressBar(final ArcProgress arcProgress, final int position) {
+
+        final long length_in_milliseconds = 10000;
+        final long period_in_milliseconds = 1000;
+
+        countDownTimer = new CountDownTimer(length_in_milliseconds, period_in_milliseconds) {
+
+            @Override
+            public void onTick(long millisUntilFinished_) {
+                if (length_in_milliseconds - millisUntilFinished_ > 0 && millisUntilFinished_ >= 2*period_in_milliseconds) {
+                    float f = ((float) (length_in_milliseconds - millisUntilFinished_)) / length_in_milliseconds * 100;
+                    arcProgress.setProgress(Math.round(f));
+                } else {
+                    int max = arcProgress.getMax();
+                    arcProgress.setProgress(max);
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                // do whatever when the bar is full
+            }
+        }.start();
+    }
+
+    private void stopTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+    }
+
 }

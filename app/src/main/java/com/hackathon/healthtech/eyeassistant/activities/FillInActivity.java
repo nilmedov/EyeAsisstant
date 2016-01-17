@@ -37,7 +37,7 @@ FillInAnswersFragment.OnFragmentInteractionListener{
 
     @Override
     public void onAnswersAsked(List<Answer> answers) {
-        getQuestion().setAnswers(answers);
+//        getQuestion().setAnswers(answers);
         setResult(RESULT_OK);
         finish();
     }

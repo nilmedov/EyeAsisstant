@@ -3,22 +3,21 @@
 
     <item android:state_pressed="true">
         <shape>
-            <stroke android:width="2dp" android:color="@android:color/white"/>
-            <corners android:radius="24dp"/>
+            <solid android:color="@color/bg_default_btn_pressed"/>
+            <corners android:radius="25dp"/>
         </shape>
     </item>
 
     <item android:state_enabled="false">
         <shape>
-            <stroke android:width="2dp" android:color="@android:color/white"/>
-            <corners android:radius="24dp"/>
+            <corners android:radius="25dp"/>
         </shape>
     </item>
 
     <item>
         <shape>
-            <stroke android:width="2dp" android:color="@android:color/white"/>
-            <corners android:radius="24dp"/>
+            <solid android:color="@color/bg_default_btn"/>
+            <corners android:radius="25dp"/>
         </shape>
     </item>
 

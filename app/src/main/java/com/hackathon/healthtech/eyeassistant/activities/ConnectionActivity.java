@@ -44,6 +44,7 @@ public class ConnectionActivity extends BaseActivity implements
     private final static String TAG = ConnectionActivity.class.getSimpleName();
     private static final int ASK_QUESTION_CODE = 10001;
     private String mOtherEndpointId;
+    private Question question;
 
     @Retention(RetentionPolicy.CLASS)
     @IntDef({STATE_IDLE, STATE_READY, STATE_ADVERTISING, STATE_DISCOVERING, STATE_CONNECTED})
@@ -79,6 +80,16 @@ public class ConnectionActivity extends BaseActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(Nearby.CONNECTIONS_API)
                 .build();
+
+        question = new Question("Question full text?");
+        question.setAnswerFirst(new Answer("Answer1"));
+        question.setAnswerSecond(new Answer("Answer2"));
+        question.setAnswerThird(new Answer("Answer3"));
+        question.setAnswerFourth(new Answer("Answer4"));
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_container, QuestionFragment.newInstance(question)).commit();
+
+
 
     }
 
@@ -379,23 +390,23 @@ public class ConnectionActivity extends BaseActivity implements
         switch (mState) {
             case STATE_IDLE:
                 debugLog("STATE_IDLE");
-                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_idle);
+//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_idle);
                 break;
             case STATE_READY:
                 debugLog("STATE_READY");
-                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_ready);
+//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_ready);
                 break;
             case STATE_ADVERTISING:
                 debugLog("STATE_ADVERTISING");
-                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_advertising);
+//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_advertising);
                 break;
             case STATE_DISCOVERING:
                 debugLog("STATE_DISCOVERING");
-                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_discovering);
+//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_discovering);
                 break;
             case STATE_CONNECTED:
                 debugLog("CONNECTED");
-                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_connected);
+//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_connected);
                 break;
         }
     }
@@ -458,7 +469,24 @@ public class ConnectionActivity extends BaseActivity implements
     }
 
     @Override
-    public void onAnswerSelected(Answer answer) {
+    public void onAnswerSelected(int position) {
+        Answer answer;
+        switch (position) {
+            case 1:
+            default:
+                answer = question.getAnswerFirst();
+                break;
+            case 2:
+                answer = question.getAnswerSecond();
+                break;
+            case 3:
+                answer = question.getAnswerThird();
+                break;
+            case 4:
+                answer = question.getAnswerFourth();
+                break;
+        }
+        answer.setCorrect(true);
         debugLog(answer.getMessage());
     }
 }

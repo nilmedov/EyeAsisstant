@@ -12,10 +12,11 @@
         android:textAlignment="center"/>
 
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_next"
         android:layout_alignParentBottom="true"
-        android:text="@string/next"/>
+        android:text="@string/next"
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>
