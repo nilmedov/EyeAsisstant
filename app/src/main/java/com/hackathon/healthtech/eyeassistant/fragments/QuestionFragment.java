@@ -496,11 +496,11 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 		}
 		if (leftEyeCalibrated.y - currentLeftEye.y >= EYE_BOTTOM_THRESHOLD && rightEyeCalibrated.y - currentRightEye.y >= EYE_BOTTOM_THRESHOLD) {
 			// translation to the bottom
-			return EYES_POSITION_BOTTOM;
+			return EYES_POSITION_TOP;
 		}
 		if (currentLeftEye.y - leftEyeCalibrated.y >= EYE_TOP_THRESHOLD && currentRightEye.y - rightEyeCalibrated.y >= EYE_TOP_THRESHOLD) {
 			// translation to the top
-			return EYES_POSITION_TOP;
+			return EYES_POSITION_BOTTOM;
 		}
 
 		return EYES_POSITION_IDLE;
@@ -628,7 +628,7 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 			@Override
 			public void run() {
 				final long length_in_milliseconds = 5000;
-				final long period_in_milliseconds = 1000;
+				final long period_in_milliseconds = 200;
 
 				countDownTimer = new CountDownTimer(length_in_milliseconds, period_in_milliseconds) {
 
@@ -638,18 +638,21 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 						if (length_in_milliseconds - millisUntilFinished_ > 0 && millisUntilFinished_ >= 2 * period_in_milliseconds) {
 							float f = ((float) (length_in_milliseconds - millisUntilFinished_)) / length_in_milliseconds * 100;
 							arcProgress.setProgress(Math.round(f));
-						} else {
-							int max = arcProgress.getMax();
-							arcProgress.setProgress(max);
 						}
+//						else
+//						{
+//							int max = arcProgress.getMax();
+//							arcProgress.setProgress(max);
+//						}
 					}
 
 					@Override
 					public void onFinish() {
 						// do whatever when the bar is full
 						isTimerFinished = true;
-
-						Toast.makeText(getActivity(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+						if (getActivity() != null) {
+							Toast.makeText(getActivity(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+						}
 					}
 				}.start();
 			}
