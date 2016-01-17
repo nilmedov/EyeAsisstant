@@ -13,9 +13,6 @@ import com.hackathon.healthtech.eyeassistant.R;
 import com.hackathon.healthtech.eyeassistant.entities.Answer;
 import com.hackathon.healthtech.eyeassistant.entities.Question;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class FillInAnswersFragment extends Fragment implements View.OnClickListener {
     private Question mQuestion;
     private EditText fAnswer1, fAnswer2, fAnswer3, fAnswer4;
@@ -64,11 +61,12 @@ public class FillInAnswersFragment extends Fragment implements View.OnClickListe
     // TODO: Rename method, update argument and hook method into UI event
     public void onNextPressed() {
         if (mListener != null) {
-           List<Answer> answers = new ArrayList<>();
-            answers.add(new Answer(fAnswer1.getText().toString()));
-            answers.add(new Answer(fAnswer2.getText().toString()));
-            answers.add(new Answer(fAnswer3.getText().toString()));
-            answers.add(new Answer(fAnswer4.getText().toString()));
+           Answer[] answers = new Answer[]{
+                   new Answer(fAnswer1.getText().toString()),
+                   new Answer(fAnswer2.getText().toString()),
+                   new Answer(fAnswer3.getText().toString()),
+                   new Answer(fAnswer4.getText().toString())
+           };
             mListener.onAnswersAsked(answers);
         }
     }
@@ -96,6 +94,6 @@ public class FillInAnswersFragment extends Fragment implements View.OnClickListe
     }
 
     public interface OnFragmentInteractionListener {
-        void onAnswersAsked(List<Answer> answers);
+        void onAnswersAsked(Answer[] answers);
     }
 }

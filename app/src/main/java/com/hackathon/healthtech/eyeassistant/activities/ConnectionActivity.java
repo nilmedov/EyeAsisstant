@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
@@ -29,6 +30,9 @@ import com.hackathon.healthtech.eyeassistant.R;
 import com.hackathon.healthtech.eyeassistant.dialogs.MyListDialog;
 import com.hackathon.healthtech.eyeassistant.entities.Answer;
 import com.hackathon.healthtech.eyeassistant.entities.Question;
+import com.hackathon.healthtech.eyeassistant.fragments.AskFragment;
+import com.hackathon.healthtech.eyeassistant.fragments.FillInAnswersFragment;
+import com.hackathon.healthtech.eyeassistant.fragments.FillInQuestionFragment;
 import com.hackathon.healthtech.eyeassistant.fragments.QuestionFragment;
 import com.hackathon.healthtech.eyeassistant.utils.ParcelableUtils;
 
@@ -38,13 +42,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectionActivity extends BaseActivity implements
+        FillInQuestionFragment.OnFragmentInteractionListener,
+        FillInAnswersFragment.OnFragmentInteractionListener,
+        AskFragment.OnFragmentInteractionListener,
         QuestionFragment.OnFragmentInteractionListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, Connections.ConnectionRequestListener, Connections.EndpointDiscoveryListener, Connections.MessageListener {
     private final static String TAG = ConnectionActivity.class.getSimpleName();
     private static final int ASK_QUESTION_CODE = 10001;
     private String mOtherEndpointId;
-    private Question question;
+    private Question mQuestion;
 
     @Retention(RetentionPolicy.CLASS)
     @IntDef({STATE_IDLE, STATE_READY, STATE_ADVERTISING, STATE_DISCOVERING, STATE_CONNECTED})
@@ -81,16 +88,12 @@ public class ConnectionActivity extends BaseActivity implements
                 .addApi(Nearby.CONNECTIONS_API)
                 .build();
 
-        question = new Question("Question full text?");
-        question.setAnswerFirst(new Answer("Answer1"));
-        question.setAnswerSecond(new Answer("Answer2"));
-        question.setAnswerThird(new Answer("Answer3"));
-        question.setAnswerFourth(new Answer("Answer4"));
+        replaceFragment(new AskFragment());
+    }
+
+    private void replaceFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_container, QuestionFragment.newInstance(question)).commit();
-
-
-
+                .replace(R.id.content_container, fragment).commit();
     }
 
     @Override
@@ -116,6 +119,13 @@ public class ConnectionActivity extends BaseActivity implements
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
+    }
+
+    public Question getQuestion() {
+        if (mQuestion == null) {
+            mQuestion = new Question();
+        }
+        return mQuestion;
     }
 
     /**
@@ -292,8 +302,7 @@ public class ConnectionActivity extends BaseActivity implements
         // A message has been received from a remote endpoint.
         debugLog("onMessageReceived:" + endpointId + ":" + new String(payload));
         Parcelable unmarshall = ParcelableUtils.unmarshall(payload, Question.CREATOR);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_container, QuestionFragment.newInstance((Question) unmarshall)).commit();
+        replaceFragment(QuestionFragment.newInstance((Question) unmarshall));
     }
 
     @Override
@@ -390,23 +399,23 @@ public class ConnectionActivity extends BaseActivity implements
         switch (mState) {
             case STATE_IDLE:
                 debugLog("STATE_IDLE");
-//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_idle);
+                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_idle);
                 break;
             case STATE_READY:
                 debugLog("STATE_READY");
-//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_ready);
+                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_ready);
                 break;
             case STATE_ADVERTISING:
                 debugLog("STATE_ADVERTISING");
-//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_advertising);
+                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_advertising);
                 break;
             case STATE_DISCOVERING:
                 debugLog("STATE_DISCOVERING");
-//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_discovering);
+                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_discovering);
                 break;
             case STATE_CONNECTED:
                 debugLog("CONNECTED");
-//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_connected);
+                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_connected);
                 break;
         }
     }
@@ -421,7 +430,7 @@ public class ConnectionActivity extends BaseActivity implements
     }
 
     private void sendMessage() {
-        startActivityForResult(new Intent(this, FillInActivity.class), ASK_QUESTION_CODE);
+        replaceFragment(FillInAnswersFragment.newInstance());
     }
 
     @Override
@@ -474,19 +483,52 @@ public class ConnectionActivity extends BaseActivity implements
         switch (position) {
             case 1:
             default:
-                answer = question.getAnswerFirst();
+                answer = mQuestion.getAnswerFirst();
                 break;
             case 2:
-                answer = question.getAnswerSecond();
+                answer = mQuestion.getAnswerSecond();
                 break;
             case 3:
-                answer = question.getAnswerThird();
+                answer = mQuestion.getAnswerThird();
                 break;
             case 4:
-                answer = question.getAnswerFourth();
+                answer = mQuestion.getAnswerFourth();
                 break;
         }
         answer.setCorrect(true);
         debugLog(answer.getMessage());
+    }
+
+
+    @Override
+    public void onClickAddQuestion() {
+        replaceFragment(FillInQuestionFragment.newInstance());
+    }
+
+    @Override
+    public void onClickHistory() {
+        mQuestion = new Question("Question full text?");
+        mQuestion.setAnswerFirst(new Answer("Answer1"));
+        mQuestion.setAnswerSecond(new Answer("Answer2"));
+        mQuestion.setAnswerThird(new Answer("Answer3"));
+        mQuestion.setAnswerFourth(new Answer("Answer4"));
+        replaceFragment(QuestionFragment.newInstance(mQuestion));
+    }
+
+    @Override
+    public void onAnswersAsked(Answer[] answers) {
+        getQuestion().setAnswerFirst(answers[0]);
+        getQuestion().setAnswerSecond(answers[1]);
+        getQuestion().setAnswerThird(answers[2]);
+        getQuestion().setAnswerFourth(answers[3]);
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    @Override
+    public void onQuestionAsked(String question) {
+        getQuestion().setQuestion(question);
+        replaceFragment(FillInAnswersFragment.newInstance());
+
     }
 }

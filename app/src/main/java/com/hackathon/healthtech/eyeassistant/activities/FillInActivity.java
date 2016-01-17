@@ -12,8 +12,6 @@ import com.hackathon.healthtech.eyeassistant.entities.Question;
 import com.hackathon.healthtech.eyeassistant.fragments.FillInAnswersFragment;
 import com.hackathon.healthtech.eyeassistant.fragments.FillInQuestionFragment;
 
-import java.util.List;
-
 public class FillInActivity extends BaseActivity implements FillInQuestionFragment.OnFragmentInteractionListener,
 FillInAnswersFragment.OnFragmentInteractionListener{
 
@@ -36,8 +34,11 @@ FillInAnswersFragment.OnFragmentInteractionListener{
     }
 
     @Override
-    public void onAnswersAsked(List<Answer> answers) {
-//        getQuestion().setAnswers(answers);
+    public void onAnswersAsked(Answer[] answers) {
+        getQuestion().setAnswerFirst(answers[0]);
+        getQuestion().setAnswerSecond(answers[1]);
+        getQuestion().setAnswerThird(answers[2]);
+        getQuestion().setAnswerFourth(answers[3]);
         setResult(RESULT_OK);
         finish();
     }

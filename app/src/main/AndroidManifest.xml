@@ -33,8 +33,6 @@
             android:name="com.google.android.gms.nearby.connection.SERVICE_ID"
             android:value="@string/nearby_service_id"/>
 
-        <activity android:name=".activities.FillInActivity">
-        </activity>
     </application>
 
 </manifest>
