@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -35,9 +36,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class MainActivity extends Activity implements CvCameraViewListener2 {
+public class MainActivity extends Activity implements CvCameraViewListener2, View.OnClickListener {
 
-	private static final String TAG = "MainActivity";
+	private static final String TAG = MainActivity.class.getSimpleName();
 	private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
 	public static final int JAVA_DETECTOR = 0;
 	private static final int TM_SQDIFF = 0;
@@ -46,6 +47,9 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 	private static final int TM_CCOEFF_NORMED = 3;
 	private static final int TM_CCORR = 4;
 	private static final int TM_CCORR_NORMED = 5;
+
+	private static final int EYE_AREA_WIDTH_CONST = 8; //16
+	private static final float EYE_AREA_HEIGHT_CONST = 4.5f;  //4.5
 
 
 	private int learn_frames = 0;
@@ -78,8 +82,22 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
 	private CameraBridgeViewBase mOpenCvCameraView;
 
+	private ViewFlipper mViewFlipper;
 	private SeekBar mMethodSeekbar;
-	private TextView mValue;
+	private TextView mValue, mTxtLeftEye, mTxtRightEye;
+
+//	private long timePerUpdate = 5000;
+//	private Handler mHandler;
+//	private Runnable mRunnable = new Runnable() {
+//
+//		@Override
+//		public void run() {
+//			learn_frames = 0;
+//
+//			mHandler.postDelayed(mRunnable, timePerUpdate);
+//		}
+//	};
+
 
 	double xCenter = -1;
 	double yCenter = -1;
@@ -156,7 +174,6 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 					mOpenCvCameraView.setCameraIndex(1);
 					mOpenCvCameraView.enableFpsMeter();
 					mOpenCvCameraView.enableView();
-
 				}
 				break;
 				default: {
@@ -186,8 +203,15 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 		mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.fd_activity_surface_view);
 		mOpenCvCameraView.setCvCameraViewListener(this);
 
+		mViewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
+
+		findViewById(R.id.btn_recreate).setOnClickListener(this);
+		findViewById(R.id.btn_flip).setOnClickListener(this);
+
 		mMethodSeekbar = (SeekBar) findViewById(R.id.methodSeekBar);
 		mValue = (TextView) findViewById(R.id.method);
+		mTxtLeftEye = (TextView) findViewById(R.id.txt_left_eye);
+		mTxtRightEye = (TextView) findViewById(R.id.txt_right_eye);
 
 		mMethodSeekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
@@ -245,13 +269,17 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 		super.onResume();
 		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_11, this,
 				mLoaderCallback);
+//		mHandler = new Handler();
+//		mRunnable.run();
 	}
 
+	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		mOpenCvCameraView.disableView();
 	}
 
+	@Override
 	public void onCameraViewStarted(int width, int height) {
 		mGray = new Mat();
 		mRgba = new Mat();
@@ -281,6 +309,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
 		MatOfRect faces = new MatOfRect();
 
+		Core.rectangle(mRgba, new Point(mOpenCvCameraView.getFrameWidth() / 2 - 250, mOpenCvCameraView.getFrameHeight() / 2 + 300), new Point(mOpenCvCameraView.getFrameWidth() / 2 + 250, mOpenCvCameraView.getFrameHeight() / 2 - 300), FACE_RECT_COLOR, 3);
+
 		if (mJavaDetector != null)
 			mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2,
 					2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
@@ -289,32 +319,23 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
 		Rect[] facesArray = faces.toArray();
 		for (int i = 0; i < facesArray.length; i++) {
-			Core.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(),
-					FACE_RECT_COLOR, 3);
+//			Core.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(),
+//					FACE_RECT_COLOR, 3);
 			xCenter = (facesArray[i].x + facesArray[i].width + facesArray[i].x) / 2;
 			yCenter = (facesArray[i].y + facesArray[i].y + facesArray[i].height) / 2;
-			Point center = new Point(xCenter, yCenter);
+//			Point center = new Point(xCenter, yCenter);
 
-			Core.circle(mRgba, center, 10, new Scalar(255, 0, 0, 255), 3);
-
-			Core.putText(mRgba, "[" + center.x + "," + center.y + "]",
-					new Point(center.x + 20, center.y + 20),
-					Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
-							255));
+//			Core.circle(mRgba, center, 10, new Scalar(255, 0, 0, 255), 3);
 
 			Rect r = facesArray[i];
 			// compute the eye area
-			Rect eyearea = new Rect(r.x + r.width / 8,
-					(int) (r.y + (r.height / 4.5)), r.width - 2 * r.width / 8,
-					(int) (r.height / 3.0));
-			// split it
-			Rect eyearea_right = new Rect(r.x + r.width / 16,
-					(int) (r.y + (r.height / 4.5)),
-					(r.width - 2 * r.width / 16) / 2, (int) (r.height / 3.0));
-			Rect eyearea_left = new Rect(r.x + r.width / 16
-					+ (r.width - 2 * r.width / 16) / 2,
-					(int) (r.y + (r.height / 4.5)),
-					(r.width - 2 * r.width / 16) / 2, (int) (r.height / 3.0));
+			final Rect eyearea_right = new Rect(r.x + r.width / EYE_AREA_WIDTH_CONST,
+					(int) (r.y + (r.height / EYE_AREA_HEIGHT_CONST)),
+					(r.width - 2 * r.width / EYE_AREA_WIDTH_CONST) / 2, (int) (r.height / 3.0));
+			final Rect eyearea_left = new Rect(r.x + r.width / 16
+					+ (r.width - 2 * r.width / EYE_AREA_WIDTH_CONST) / 2,
+					(int) (r.y + (r.height / EYE_AREA_HEIGHT_CONST)),
+					(r.width - 2 * r.width / EYE_AREA_WIDTH_CONST) / 2, (int) (r.height / 3.0));
 			// draw the area - mGray is working grayscale mat, if you want to
 			// see area in rgb preview, change mGray to mRgba
 			Core.rectangle(mRgba, eyearea_left.tl(), eyearea_left.br(),
@@ -334,6 +355,13 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
 			}
 
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					mTxtLeftEye.setText(String.format("x=%d, y=%d", eyearea_left.x, eyearea_left.y));
+					mTxtRightEye.setText(String.format("x=%d, y=%d", eyearea_right.x, eyearea_right.y));
+				}
+			});
 
 			// cut eye areas and put them to zoom windows
 //			Imgproc.resize(mRgba.submat(eyearea_left), mZoomWindow2,
@@ -490,10 +518,16 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 		return template;
 	}
 
-	public void onRecreateClick(View v)
-	{
-		learn_frames = 0;
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.btn_recreate:
+				learn_frames = 0;
+				break;
+			case R.id.btn_flip:
+				mViewFlipper.showNext();
+				break;
+		}
 	}
-
-
 }
