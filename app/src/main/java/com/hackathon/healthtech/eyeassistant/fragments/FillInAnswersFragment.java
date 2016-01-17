@@ -52,11 +52,10 @@ public class FillInAnswersFragment extends Fragment implements View.OnClickListe
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        (fAnswer1 = (EditText) view.findViewById(R.id.f_answer_1)).setOnClickListener(this);
-        (fAnswer2 = (EditText) view.findViewById(R.id.f_answer_2)).setOnClickListener(this);
-        (fAnswer3 = (EditText) view.findViewById(R.id.f_answer_3)).setOnClickListener(this);
-        (fAnswer4 = (EditText) view.findViewById(R.id.f_answer_4)).setOnClickListener(this);
-        (fAnswer4 = (EditText) view.findViewById(R.id.f_answer_4)).setOnClickListener(this);
+        fAnswer1 = (EditText) view.findViewById(R.id.f_answer_1);
+        fAnswer2 = (EditText) view.findViewById(R.id.f_answer_2);
+        fAnswer3 = (EditText) view.findViewById(R.id.f_answer_3);
+        fAnswer4 = (EditText) view.findViewById(R.id.f_answer_4);
 
         view.findViewById(R.id.btn_next).setOnClickListener(this);
 

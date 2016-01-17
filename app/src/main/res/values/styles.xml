@@ -1,23 +1,26 @@
 <resources>
 
-	<!-- Base application theme. -->
-	<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-		<!-- Customize your theme here. -->
-		<item name="colorPrimary">@color/colorPrimary</item>
-		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-		<item name="colorAccent">@color/colorAccent</item>
-	</style>
-
-    <style name="FullscreenTheme" parent="AppTheme">
-        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowBackground">@null</item>
-        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
-        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    <style name="ButtonStyle" parent="@style/Widget.AppCompat.Button">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:background">@drawable/bg_button</item>
+        <item name="fontPath">fonts/Seravek.ttf</item>
     </style>
 
-    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
-        <item name="android:background">@color/black_overlay</item>
+    <style name="TextViewStyle" parent="android:Widget.TextView">
+        <item name="fontPath">fonts/Seravek.ttf</item>
+    </style>
+
+    <style name="EditTextStyle" parent="@style/Widget.AppCompat.EditText">
+        <!--<item name="android:textColor">@color/edit_txt_color</item>-->
+        <!--<item name="android:textColorHint">@color/edit_hint_color</item>-->
+        <!--<item name="android:layout_gravity">center_horizontal</item>-->
+        <!--<item name="android:minHeight">@dimen/global_btn_min_height</item>-->
+        <!--<item name="android:paddingLeft">5dp</item>-->
+        <!--<item name="android:paddingRight">5dp</item>-->
+        <item name="fontPath">fonts/Seravek.ttf</item>
     </style>
 
 </resources>

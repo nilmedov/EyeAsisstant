@@ -1,6 +1,8 @@
 package com.hackathon.healthtech.eyeassistant.activities;
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -409,21 +411,20 @@ public class ConnectionActivity extends AppCompatActivity implements
     }
 
     private void sendMessage() {
-        // Sends a reliable message, which is guaranteed to be delivered eventually and to respect
-        // message ordering from sender to receiver. Nearby.Connections.sendUnreliableMessage
-        // should be used for high-frequency messages where guaranteed delivery is not required, such
-        // as showing one player's cursor location to another. Unreliable messages are often
-        // delivered faster than reliable messages.
-//        String msg = mMessageText.getText().toString();
-        ArrayList<Answer> answers = new ArrayList<>();
-        answers.add(new Answer("Answer1"));
-        answers.add(new Answer("Answer2"));
-        answers.add(new Answer("Answer3"));
-        answers.add(new Answer("Answer4"));
-        Question q = new Question("Question", answers);
-        Nearby.Connections.sendReliableMessage(mGoogleApiClient, mOtherEndpointId, ParcelableUtils.marshall(q));
+        startActivityForResult(new Intent(this, FillInActivity.class), ASK_QUESTION_CODE);
+    }
 
-//        mMessageText.setText(null);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ASK_QUESTION_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null && data.getExtras() != null) {
+                    Parcelable parcelable = data.getParcelableExtra(Question.class.getSimpleName());
+                    Nearby.Connections.sendReliableMessage(mGoogleApiClient, mOtherEndpointId, ParcelableUtils.marshall(parcelable));
+                }
+            }
+        }
     }
 
     @Override

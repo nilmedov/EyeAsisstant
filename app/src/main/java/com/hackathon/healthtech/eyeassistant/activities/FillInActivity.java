@@ -39,11 +39,18 @@ FillInAnswersFragment.OnFragmentInteractionListener{
     @Override
     public void onAnswersAsked(List<Answer> answers) {
         getQuestion().setAnswers(answers);
+        setResult(RESULT_OK);
+        finish();
     }
 
     @Override
     public void onQuestionAsked(String question) {
         getQuestion().setQuestion(question);
+        int currentItem = mViewPager.getCurrentItem();
+        if (currentItem < mSectionsPagerAdapter.getCount()) {
+            mViewPager.setCurrentItem(currentItem + 1);
+        }
+
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
