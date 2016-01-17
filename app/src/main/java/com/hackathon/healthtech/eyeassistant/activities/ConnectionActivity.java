@@ -1,6 +1,5 @@
 package com.hackathon.healthtech.eyeassistant.activities;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -8,6 +7,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,8 +27,10 @@ import com.google.android.gms.nearby.connection.Connections;
 import com.google.android.gms.nearby.connection.ConnectionsStatusCodes;
 import com.hackathon.healthtech.eyeassistant.R;
 import com.hackathon.healthtech.eyeassistant.dialogs.MyListDialog;
-import com.hackathon.healthtech.eyeassistant.entities.Answer;
 import com.hackathon.healthtech.eyeassistant.entities.Question;
+import com.hackathon.healthtech.eyeassistant.fragments.AskFragment;
+import com.hackathon.healthtech.eyeassistant.fragments.FillInAnswersFragment;
+import com.hackathon.healthtech.eyeassistant.fragments.FillInQuestionFragment;
 import com.hackathon.healthtech.eyeassistant.fragments.QuestionFragment;
 import com.hackathon.healthtech.eyeassistant.utils.ParcelableUtils;
 
@@ -38,13 +40,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectionActivity extends BaseActivity implements
+        FillInQuestionFragment.OnFragmentInteractionListener,
+        FillInAnswersFragment.OnFragmentInteractionListener,
+        AskFragment.OnFragmentInteractionListener,
         QuestionFragment.OnFragmentInteractionListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, Connections.ConnectionRequestListener, Connections.EndpointDiscoveryListener, Connections.MessageListener {
     private final static String TAG = ConnectionActivity.class.getSimpleName();
     private static final int ASK_QUESTION_CODE = 10001;
     private String mOtherEndpointId;
-    private Question question;
+    private Question mQuestion;
 
     @Retention(RetentionPolicy.CLASS)
     @IntDef({STATE_IDLE, STATE_READY, STATE_ADVERTISING, STATE_DISCOVERING, STATE_CONNECTED})
@@ -81,16 +86,12 @@ public class ConnectionActivity extends BaseActivity implements
                 .addApi(Nearby.CONNECTIONS_API)
                 .build();
 
-        question = new Question("Question full text?");
-        question.setAnswerFirst(new Answer("Answer1"));
-        question.setAnswerSecond(new Answer("Answer2"));
-        question.setAnswerThird(new Answer("Answer3"));
-        question.setAnswerFourth(new Answer("Answer4"));
+        replaceFragment(new AskFragment());
+    }
+
+    private void replaceFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_container, QuestionFragment.newInstance(question)).commit();
-
-
-
+                .replace(R.id.content_container, fragment).commit();
     }
 
     @Override
@@ -116,6 +117,13 @@ public class ConnectionActivity extends BaseActivity implements
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
+    }
+
+    public Question getQuestion() {
+        if (mQuestion == null) {
+            mQuestion = new Question();
+        }
+        return mQuestion;
     }
 
     /**
@@ -292,8 +300,7 @@ public class ConnectionActivity extends BaseActivity implements
         // A message has been received from a remote endpoint.
         debugLog("onMessageReceived:" + endpointId + ":" + new String(payload));
         Parcelable unmarshall = ParcelableUtils.unmarshall(payload, Question.CREATOR);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_container, QuestionFragment.newInstance((Question) unmarshall)).commit();
+        replaceFragment(QuestionFragment.newInstance((Question) unmarshall));
     }
 
     @Override
@@ -372,6 +379,7 @@ public class ConnectionActivity extends BaseActivity implements
         updateViewVisibility(STATE_IDLE);
     }
 
+    @Deprecated
     private void disconnect() {
         debugLog("disconnect from:" + mOtherEndpointId);
         if (!TextUtils.isEmpty(mOtherEndpointId)) {
@@ -389,24 +397,20 @@ public class ConnectionActivity extends BaseActivity implements
         mState = newState;
         switch (mState) {
             case STATE_IDLE:
-                debugLog("STATE_IDLE");
-//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_idle);
-                break;
             case STATE_READY:
-                debugLog("STATE_READY");
-//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_ready);
+                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_not_connected);
                 break;
             case STATE_ADVERTISING:
                 debugLog("STATE_ADVERTISING");
-//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_advertising);
+                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_advertising);
                 break;
             case STATE_DISCOVERING:
                 debugLog("STATE_DISCOVERING");
-//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_discovering);
+                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_discovering);
                 break;
             case STATE_CONNECTED:
                 debugLog("CONNECTED");
-//                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_connected);
+                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_main);
                 break;
         }
     }
@@ -418,23 +422,6 @@ public class ConnectionActivity extends BaseActivity implements
      */
     private void debugLog(String msg) {
         Log.d(TAG, msg);
-    }
-
-    private void sendMessage() {
-        startActivityForResult(new Intent(this, FillInActivity.class), ASK_QUESTION_CODE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ASK_QUESTION_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null && data.getExtras() != null) {
-                    Parcelable parcelable = data.getParcelableExtra(Question.class.getSimpleName());
-                    Nearby.Connections.sendReliableMessage(mGoogleApiClient, mOtherEndpointId, ParcelableUtils.marshall(parcelable));
-                }
-            }
-        }
     }
 
     @Override
@@ -451,17 +438,16 @@ public class ConnectionActivity extends BaseActivity implements
 //            case android.R.id.home:
 //                drawerLayout.openDrawer(GravityCompat.START);
 //                return true;
-            case R.id.action_disconnect:
-                disconnect();
-                return true;
-            case R.id.action_discover:
-                startDiscovery();
+            case R.id.action_change_role:
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
                 return true;
             case R.id.action_advertise:
-                startAdvertising();
-                return true;
-            case R.id.action_send:
-                sendMessage();
+                if (isPatient()) {
+                    startAdvertising();
+                } else {
+                    startDiscovery();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -469,24 +455,37 @@ public class ConnectionActivity extends BaseActivity implements
     }
 
     @Override
-    public void onAnswerSelected(int position) {
-        Answer answer;
-        switch (position) {
-            case 1:
-            default:
-                answer = question.getAnswerFirst();
-                break;
-            case 2:
-                answer = question.getAnswerSecond();
-                break;
-            case 3:
-                answer = question.getAnswerThird();
-                break;
-            case 4:
-                answer = question.getAnswerFourth();
-                break;
-        }
-        answer.setCorrect(true);
-        debugLog(answer.getMessage());
+    public void onAnswerSelected(Question question) {
+        sendViaNearBy(question);
+    }
+
+
+    @Override
+    public void onClickAddQuestion() {
+        replaceFragment(FillInQuestionFragment.newInstance());
+    }
+
+    @Override
+    public void onClickHistory() {
+//        mQuestion = new Question("Question full text?");
+//        mQuestion.setAnswerFirst(new Answer("Answer1"));
+//        mQuestion.setAnswerSecond(new Answer("Answer2"));
+//        mQuestion.setAnswerThird(new Answer("Answer3"));
+//        mQuestion.setAnswerFourth(new Answer("Answer4"));
+        replaceFragment(QuestionFragment.newInstance(mQuestion));
+    }
+
+    private void sendViaNearBy(Question question) {
+        Nearby.Connections.sendReliableMessage(mGoogleApiClient, mOtherEndpointId, ParcelableUtils.marshall(question));
+    }
+
+    @Override
+    public void onQuestionAsked(Question question) {
+        replaceFragment(FillInAnswersFragment.newInstance(question));
+    }
+
+    @Override
+    public void onAnswersAsked(Question question) {
+        sendViaNearBy(question);
     }
 }

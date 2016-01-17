@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<color name="colorPrimary">#40b8ca</color>
-	<color name="colorPrimaryDark">#303F9F</color>
-	<color name="colorAccent">#47ceca</color>
+	<color name="color_main_end">#47ceca</color>
+	<color name="colorAccent">@android:color/white</color>
+	<color name="colorControlNormal">#80bebebe</color>
 
     <color name="black_overlay">#cd000000</color>
 	<color name="bg_default_btn">#07000000</color>
 	<color name="bg_default_btn_pressed">#09000508</color>
+	<color name="bg_action_bar">#22000508</color>
 	<color name="default_text_color">#ffffff</color>
 	<color name="default_text_color_with_opacity">#cdffffff</color>
+
+	<color name="color_idle_end">#cf8e71</color>
+	<color name="color_idle_start">#e77e5a</color>
+	<color name="color_discovering_end">#d9b888</color>
+	<color name="color_discovering_start">#e0da95</color>
+	<color name="color_advertising_end">#69a673</color>
+	<color name="color_advertising_start">#95e0a1</color>
+
 </resources>

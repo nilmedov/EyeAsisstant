@@ -375,7 +375,7 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 	public void onResume() {
 		super.onResume();
 		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_11, getActivity(),
-				mLoaderCallback);
+                mLoaderCallback);
 	}
 
 	@Override
@@ -631,20 +631,12 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 				final long period_in_milliseconds = 200;
 
 				countDownTimer = new CountDownTimer(length_in_milliseconds, period_in_milliseconds) {
-
-					@Override
-					public void onTick(long millisUntilFinished_) {
-						isTimerFinished = false;
-						if (length_in_milliseconds - millisUntilFinished_ > 0 && millisUntilFinished_ >= 2 * period_in_milliseconds) {
-							float f = ((float) (length_in_milliseconds - millisUntilFinished_)) / length_in_milliseconds * 100;
-							arcProgress.setProgress(Math.round(f));
-						}
-//						else
-//						{
-//							int max = arcProgress.getMax();
-//							arcProgress.setProgress(max);
-//						}
-					}
+                    
+                    @Override
+                    public void onTick(long millisUntilFinished_) {
+                        float f = ((float) (length_in_milliseconds - millisUntilFinished_)) / length_in_milliseconds * 100;
+                        arcProgress.setProgress(Math.round(f));
+                    }
 
 					@Override
 					public void onFinish() {
@@ -652,6 +644,26 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 						isTimerFinished = true;
 						if (getActivity() != null) {
 							Toast.makeText(getActivity(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+                            int max = arcProgress.getMax();
+                            arcProgress.setProgress(max);
+                            if (mListener != null) {
+                                switch (position) {
+                                    case 1:
+                                    default:
+                                        mQuestion.getAnswerFirst().setCorrect(true);
+                                        break;
+                                    case 2:
+                                        mQuestion.getAnswerSecond().setCorrect(true);
+                                        break;
+                                    case 3:
+                                        mQuestion.getAnswerThird().setCorrect(true);
+                                        break;
+                                    case 4:
+                                        mQuestion.getAnswerFourth().setCorrect(true);
+                                        break;
+                                }
+                                mListener.onAnswerSelected(mQuestion);
+                            }
 						}
 					}
 				}.start();
@@ -674,10 +686,11 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 			});
 		}
 	}
+    
+ 
 
-	public interface OnFragmentInteractionListener {
-		// TODO: Update argument type and name
-		void onAnswerSelected(int posiion);
-	}
+    public interface OnFragmentInteractionListener {
+        void onAnswerSelected(Question question);
+    }
 
 }

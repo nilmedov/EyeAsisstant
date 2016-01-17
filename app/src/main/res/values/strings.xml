@@ -2,6 +2,7 @@
     <string name="app_name">Eye Assistant</string>
     <string name="nearby_service_id">com.hackathon.healthtech.eyeassistant.service</string>
     <string name="advertise">Advertise</string>
+    <string name="change_role">Change role</string>
     <string name="disconnect">Disconnect</string>
     <string name="discover">Discover</string>
     <string name="debug_label">DEBUG</string>
@@ -14,11 +15,18 @@
 
     <string name="next">Next</string>
     <string name="sample">Lorem ipsum dolor sit amet?</string>
+
     <string name="chose_role">Chose your role please</string>
     <string name="ask">Ask</string>
     <string name="answer">Answer</string>
     <string name="add_question">Add question</string>
     <string name="history">History</string>
+
+    <string name="hint_question">Your question</string>
+    <string name="hint_answer_1">Answer1</string>
+    <string name="hint_answer_2">Answer2</string>
+    <string name="hint_answer_3">Answer3</string>
+    <string name="hint_answer_4">Answer4</string>
 
     <string name="title_activity_splash">SplashActivity</string>
 </resources>

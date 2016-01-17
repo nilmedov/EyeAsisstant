@@ -13,6 +13,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  * Created by nnet on 1/17/16.
  */
 public class EyeAssistantApp extends Application {
+    public static final String IS_PATIENT_KEY = "isPatient";
 
     @Override
     public void onCreate() {
