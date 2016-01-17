@@ -2,7 +2,6 @@ package com.hackathon.healthtech.eyeassistant.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.hackathon.healthtech.eyeassistant.R;
@@ -12,7 +11,7 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.core.Mat;
 
-public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener {
+public class MainActivity extends BaseActivity implements CameraBridgeViewBase.CvCameraViewListener {
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 

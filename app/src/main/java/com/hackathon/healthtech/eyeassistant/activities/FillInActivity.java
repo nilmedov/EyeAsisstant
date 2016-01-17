@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 
 import com.hackathon.healthtech.eyeassistant.R;
 import com.hackathon.healthtech.eyeassistant.entities.Answer;
@@ -15,7 +14,7 @@ import com.hackathon.healthtech.eyeassistant.fragments.FillInQuestionFragment;
 
 import java.util.List;
 
-public class FillInActivity extends AppCompatActivity implements FillInQuestionFragment.OnFragmentInteractionListener,
+public class FillInActivity extends BaseActivity implements FillInQuestionFragment.OnFragmentInteractionListener,
 FillInAnswersFragment.OnFragmentInteractionListener{
 
     private ViewPager mViewPager;
