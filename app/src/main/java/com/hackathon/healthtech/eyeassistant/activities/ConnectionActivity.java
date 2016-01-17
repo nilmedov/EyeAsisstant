@@ -86,7 +86,7 @@ public class ConnectionActivity extends BaseActivity implements
                 .addApi(Nearby.CONNECTIONS_API)
                 .build();
 
-        replaceFragment(new AskFragment());
+        replaceFragment(isPatient() ? new QuestionFragment() : new AskFragment());
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -300,7 +300,12 @@ public class ConnectionActivity extends BaseActivity implements
         // A message has been received from a remote endpoint.
         debugLog("onMessageReceived:" + endpointId + ":" + new String(payload));
         Parcelable unmarshall = ParcelableUtils.unmarshall(payload, Question.CREATOR);
-        replaceFragment(QuestionFragment.newInstance((Question) unmarshall));
+        Question question = (Question) unmarshall;
+        if (isPatient()) {
+            replaceFragment(QuestionFragment.newInstance(question));
+        } else {
+            Toast.makeText(this, question.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
