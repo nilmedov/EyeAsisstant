@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EyeAssistant</string>
+    <string name="app_name">Eye Assistant</string>
     <string name="nearby_service_id">com.hackathon.healthtech.eyeassistant.service</string>
     <string name="advertise">Advertise</string>
     <string name="disconnect">Disconnect</string>
