@@ -2,11 +2,13 @@ package com.hackathon.healthtech.eyeassistant.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -50,6 +53,7 @@ public class ConnectionActivity extends BaseActivity implements
     private static final int ASK_QUESTION_CODE = 10001;
     private String mOtherEndpointId;
     private Question mQuestion;
+    private FloatingActionButton fab;
 
     @Retention(RetentionPolicy.CLASS)
     @IntDef({STATE_IDLE, STATE_READY, STATE_ADVERTISING, STATE_DISCOVERING, STATE_CONNECTED})
@@ -79,7 +83,20 @@ public class ConnectionActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
 
+        setRequestedOrientation(isPatient() ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+
         findViewById(R.id.content_container);
+        fab = (FloatingActionButton)findViewById(R.id.fab_send);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceFragment(FillInQuestionFragment.newInstance());
+            }
+        });
+        if (!isPatient()) {
+            fab.setVisibility(View.VISIBLE);
+        }
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
