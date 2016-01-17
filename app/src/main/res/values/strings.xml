@@ -19,4 +19,6 @@
     <string name="answer">Answer</string>
     <string name="add_question">Add question</string>
     <string name="history">History</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
 </resources>
