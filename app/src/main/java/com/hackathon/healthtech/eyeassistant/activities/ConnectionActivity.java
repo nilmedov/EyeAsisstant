@@ -1,8 +1,6 @@
 package com.hackathon.healthtech.eyeassistant.activities;
 
-import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -429,23 +427,6 @@ public class ConnectionActivity extends BaseActivity implements
         Log.d(TAG, msg);
     }
 
-    private void sendMessage() {
-        replaceFragment(FillInAnswersFragment.newInstance());
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ASK_QUESTION_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null && data.getExtras() != null) {
-                    Parcelable parcelable = data.getParcelableExtra(Question.class.getSimpleName());
-                    Nearby.Connections.sendReliableMessage(mGoogleApiClient, mOtherEndpointId, ParcelableUtils.marshall(parcelable));
-                }
-            }
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -469,34 +450,14 @@ public class ConnectionActivity extends BaseActivity implements
             case R.id.action_advertise:
                 startAdvertising();
                 return true;
-            case R.id.action_send:
-                sendMessage();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
     @Override
-    public void onAnswerSelected(int position) {
-        Answer answer;
-        switch (position) {
-            case 1:
-            default:
-                answer = mQuestion.getAnswerFirst();
-                break;
-            case 2:
-                answer = mQuestion.getAnswerSecond();
-                break;
-            case 3:
-                answer = mQuestion.getAnswerThird();
-                break;
-            case 4:
-                answer = mQuestion.getAnswerFourth();
-                break;
-        }
-        answer.setCorrect(true);
-        debugLog(answer.getMessage());
+    public void onAnswerSelected(Question question) {
+        sendViaNearBy(question);
     }
 
 
@@ -515,20 +476,17 @@ public class ConnectionActivity extends BaseActivity implements
         replaceFragment(QuestionFragment.newInstance(mQuestion));
     }
 
-    @Override
-    public void onAnswersAsked(Answer[] answers) {
-        getQuestion().setAnswerFirst(answers[0]);
-        getQuestion().setAnswerSecond(answers[1]);
-        getQuestion().setAnswerThird(answers[2]);
-        getQuestion().setAnswerFourth(answers[3]);
-        setResult(RESULT_OK);
-        finish();
+    private void sendViaNearBy(Question question) {
+        Nearby.Connections.sendReliableMessage(mGoogleApiClient, mOtherEndpointId, ParcelableUtils.marshall(question));
     }
 
     @Override
-    public void onQuestionAsked(String question) {
-        getQuestion().setQuestion(question);
-        replaceFragment(FillInAnswersFragment.newInstance());
+    public void onQuestionAsked(Question question) {
+        replaceFragment(FillInAnswersFragment.newInstance(question));
+    }
 
+    @Override
+    public void onAnswersAsked(Question question) {
+        sendViaNearBy(question);
     }
 }

@@ -138,11 +138,6 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onAnswerSelected(int posiion);
-    }
-
     private void showProgressBar(final ArcProgress arcProgress, final int position) {
 
         final long length_in_milliseconds = 10000;
@@ -152,18 +147,33 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onTick(long millisUntilFinished_) {
-                if (length_in_milliseconds - millisUntilFinished_ > 0 && millisUntilFinished_ >= 2*period_in_milliseconds) {
-                    float f = ((float) (length_in_milliseconds - millisUntilFinished_)) / length_in_milliseconds * 100;
-                    arcProgress.setProgress(Math.round(f));
-                } else {
-                    int max = arcProgress.getMax();
-                    arcProgress.setProgress(max);
-                }
+                float f = ((float) (length_in_milliseconds - millisUntilFinished_)) / length_in_milliseconds * 100;
+                arcProgress.setProgress(Math.round(f));
             }
 
             @Override
             public void onFinish() {
                 // do whatever when the bar is full
+                int max = arcProgress.getMax();
+                arcProgress.setProgress(max);
+                if (mListener != null) {
+                    switch (position) {
+                        case 1:
+                        default:
+                            mQuestion.getAnswerFirst().setCorrect(true);
+                            break;
+                        case 2:
+                            mQuestion.getAnswerSecond().setCorrect(true);
+                            break;
+                        case 3:
+                            mQuestion.getAnswerThird().setCorrect(true);
+                            break;
+                        case 4:
+                            mQuestion.getAnswerFourth().setCorrect(true);
+                            break;
+                    }
+                    mListener.onAnswerSelected(mQuestion);
+                }
             }
         }.start();
     }
@@ -172,6 +182,10 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onAnswerSelected(Question question);
     }
 
 }

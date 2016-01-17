@@ -14,9 +14,8 @@ import com.hackathon.healthtech.eyeassistant.entities.Answer;
 import com.hackathon.healthtech.eyeassistant.entities.Question;
 
 public class FillInAnswersFragment extends Fragment implements View.OnClickListener {
-    private Question mQuestion;
     private EditText fAnswer1, fAnswer2, fAnswer3, fAnswer4;
-
+    private Question mQuestion;
 
     private OnFragmentInteractionListener mListener;
 
@@ -24,9 +23,10 @@ public class FillInAnswersFragment extends Fragment implements View.OnClickListe
         // Required empty public constructor
     }
 
-    public static FillInAnswersFragment newInstance() {
+    public static FillInAnswersFragment newInstance(Question question) {
         FillInAnswersFragment fragment = new FillInAnswersFragment();
         Bundle args = new Bundle();
+        args.putParcelable(Question.class.getSimpleName(), question);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,16 +58,13 @@ public class FillInAnswersFragment extends Fragment implements View.OnClickListe
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onNextPressed() {
         if (mListener != null) {
-           Answer[] answers = new Answer[]{
-                   new Answer(fAnswer1.getText().toString()),
-                   new Answer(fAnswer2.getText().toString()),
-                   new Answer(fAnswer3.getText().toString()),
-                   new Answer(fAnswer4.getText().toString())
-           };
-            mListener.onAnswersAsked(answers);
+            getQuestion().setAnswerFirst(new Answer(fAnswer1.getText().toString()));
+            getQuestion().setAnswerSecond(new Answer(fAnswer2.getText().toString()));
+            getQuestion().setAnswerThird(new Answer(fAnswer3.getText().toString()));
+            getQuestion().setAnswerFourth(new Answer(fAnswer4.getText().toString()));
+            mListener.onAnswersAsked(getQuestion());
         }
     }
 
@@ -94,6 +91,11 @@ public class FillInAnswersFragment extends Fragment implements View.OnClickListe
     }
 
     public interface OnFragmentInteractionListener {
-        void onAnswersAsked(Answer[] answers);
+        void onAnswersAsked(Question question);
     }
+
+    public Question getQuestion() {
+        return mQuestion;
+    }
+
 }

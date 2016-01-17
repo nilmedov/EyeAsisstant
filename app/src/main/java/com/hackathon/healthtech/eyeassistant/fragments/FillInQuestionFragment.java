@@ -58,7 +58,7 @@ public class FillInQuestionFragment extends Fragment implements View.OnClickList
     // TODO: Rename method, update argument and hook method into UI event
     public void onNextPressed() {
         if (mListener != null) {
-            mListener.onQuestionAsked(fMessage.getText().toString());
+            mListener.onQuestionAsked(new Question(fMessage.getText().toString()));
         }
     }
 
@@ -85,7 +85,6 @@ public class FillInQuestionFragment extends Fragment implements View.OnClickList
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onQuestionAsked(String question);
+        void onQuestionAsked(Question question);
     }
 }
