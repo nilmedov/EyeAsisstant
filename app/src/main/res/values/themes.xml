@@ -3,6 +3,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorControlNormal">@color/colorControlNormal</item>
 
         <item name="editTextStyle">@style/EditTextStyle</item>
         <item name="buttonStyle">@style/ButtonStyle</item>

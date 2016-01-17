@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:text="Fill in answers"
         style="@style/TextViewStyle.Header"
-        android:layout_marginTop="75dp"
+        android:layout_marginTop="50dp"
         android:id="@+id/txt_hint"/>
 
     <EditText

@@ -397,12 +397,8 @@ public class ConnectionActivity extends BaseActivity implements
         mState = newState;
         switch (mState) {
             case STATE_IDLE:
-                debugLog("STATE_IDLE");
-                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_idle);
-                break;
             case STATE_READY:
-                debugLog("STATE_READY");
-                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_ready);
+                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_not_connected);
                 break;
             case STATE_ADVERTISING:
                 debugLog("STATE_ADVERTISING");
@@ -414,7 +410,7 @@ public class ConnectionActivity extends BaseActivity implements
                 break;
             case STATE_CONNECTED:
                 debugLog("CONNECTED");
-                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_connected);
+                ConnectionActivity.this.getWindow().setBackgroundDrawableResource(R.drawable.bg_main);
                 break;
         }
     }
