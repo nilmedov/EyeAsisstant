@@ -648,10 +648,9 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 					public void onFinish() {
 						// do whatever when the bar is full
 						isTimerFinished = true;
+
 						Toast.makeText(getActivity(), String.valueOf(position), Toast.LENGTH_SHORT).show();
 					}
-
-
 				}.start();
 			}
 		});
@@ -661,6 +660,15 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 		if (countDownTimer != null) {
 			countDownTimer.cancel();
 			isTimerFinished = true;
+			getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					pbAnswer1.setProgress(0);
+					pbAnswer2.setProgress(0);
+					pbAnswer3.setProgress(0);
+					pbAnswer4.setProgress(0);
+				}
+			});
 		}
 	}
 
