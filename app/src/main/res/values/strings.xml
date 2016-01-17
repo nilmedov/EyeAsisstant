@@ -14,4 +14,10 @@
 
     <string name="next">Next</string>
     <string name="sample">Lorem ipsum dolor sit amet?</string>
+
+    <string name="hint_question">Your question</string>
+    <string name="hint_answer_1">Answer1</string>
+    <string name="hint_answer_2">Answer2</string>
+    <string name="hint_answer_3">Answer3</string>
+    <string name="hint_answer_4">Answer24</string>
 </resources>

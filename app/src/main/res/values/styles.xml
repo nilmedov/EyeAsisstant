@@ -15,8 +15,8 @@
     </style>
 
     <style name="EditTextStyle" parent="@style/Widget.AppCompat.EditText">
-        <!--<item name="android:textColor">@color/edit_txt_color</item>-->
-        <!--<item name="android:textColorHint">@color/edit_hint_color</item>-->
+        <item name="android:textColor">@color/default_text_color</item>
+        <item name="android:textColorHint">@color/default_text_color_with_opacity</item>
         <!--<item name="android:layout_gravity">center_horizontal</item>-->
         <!--<item name="android:minHeight">@dimen/global_btn_min_height</item>-->
         <!--<item name="android:paddingLeft">5dp</item>-->
@@ -27,6 +27,13 @@
     <style name="answerStyle">
         <item name="android:textSize">60sp</item>
         <item name="android:textColor">@color/default_text_color_with_opacity</item>
+    </style>
+
+    <style name="TextViewStyle.Header">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:paddingLeft">30dp</item>
+        <item name="android:paddingRight">30dp</item>
     </style>
 
 </resources>
