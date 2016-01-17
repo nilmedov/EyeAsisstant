@@ -14,4 +14,9 @@
 
     <string name="next">Next</string>
     <string name="sample">Lorem ipsum dolor sit amet?</string>
+    <string name="chose_role">Chose your role please</string>
+    <string name="ask">Ask</string>
+    <string name="answer">Answer</string>
+    <string name="add_question">Add question</string>
+    <string name="history">History</string>
 </resources>
