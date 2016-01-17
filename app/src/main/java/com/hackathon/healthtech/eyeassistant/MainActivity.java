@@ -223,8 +223,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 			}
 
 			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress,
-										  boolean fromUser) {
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				method = progress;
 				switch (method) {
 					case 0:
@@ -286,6 +285,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 		mRgba = inputFrame.rgba();
 		mGray = inputFrame.gray();
 
+		//detect faces
 		if (mAbsoluteFaceSize == 0) {
 			int height = mGray.rows();
 			if (Math.round(height * mRelativeFaceSize) > 0) {
@@ -298,8 +298,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 		Core.rectangle(mRgba, new Point(mOpenCvCameraView.getFrameWidth() / 2 - 250, mOpenCvCameraView.getFrameHeight() / 2 + 300), new Point(mOpenCvCameraView.getFrameWidth() / 2 + 250, mOpenCvCameraView.getFrameHeight() / 2 - 300), FACE_RECT_COLOR, 3);
 
 		if (mJavaDetector != null)
-			mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2,
-					2,
+			mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2,
 					new Size(mAbsoluteFaceSize, mAbsoluteFaceSize),
 					new Size());
 
@@ -308,7 +307,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 			xCenter = (facesArray[i].x + facesArray[i].width + facesArray[i].x) / 2;
 			yCenter = (facesArray[i].y + facesArray[i].y + facesArray[i].height) / 2;
 			Rect r = facesArray[i];
-			// compute the eye area
+
+			//detect eye areas
 			final Rect eyearea_right = new Rect(r.x + r.width / EYE_AREA_WIDTH_CONST,
 					(int) (r.y + (r.height / EYE_AREA_HEIGHT_CONST)),
 					(r.width - 2 * r.width / EYE_AREA_WIDTH_CONST) / 2, (int) (r.height / 3.0));
@@ -316,18 +316,15 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 					+ (r.width - 2 * r.width / EYE_AREA_WIDTH_CONST) / 2,
 					(int) (r.y + (r.height / EYE_AREA_HEIGHT_CONST)),
 					(r.width - 2 * r.width / EYE_AREA_WIDTH_CONST) / 2, (int) (r.height / 3.0));
-			// draw the area - mGray is working grayscale mat, if you want to
-			// see area in rgb preview, change mGray to mRgba
 			Core.rectangle(mRgba, eyearea_left.tl(), eyearea_left.br(),
 					new Scalar(255, 0, 0, 255), 2);
 			Core.rectangle(mRgba, eyearea_right.tl(), eyearea_right.br(),
 					new Scalar(255, 0, 0, 255), 2);
 
+			//detect eye gaze
 			final Rect leftEye;
 			final Rect rightEye;
 			if (learn_frames < 5) {
-				rightEye = null;
-				leftEye = null;
 				teplateR = get_template(mJavaDetectorEye, eyearea_right, 24);
 				teplateL = get_template(mJavaDetectorEye, eyearea_left, 24);
 				learn_frames++;
@@ -340,8 +337,6 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 						new Scalar(255, 200, 0, 255), 2);
 				Core.rectangle(mRgba, rightEyeCalibrated.tl(), rightEyeCalibrated.br(),
 						new Scalar(255, 200, 0, 255), 2);
-				// Learning finished, use the new templates for template
-				// matching
 				rightEye = match_eye(eyearea_right, teplateR, method);
 				leftEye = match_eye(eyearea_left, teplateL, method);
 
@@ -411,35 +406,11 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 		return true;
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		Log.i(TAG, "called onOptionsItemSelected; selected item: " + item);
-		if (item == mItemFace50)
-			setMinFaceSize(0.5f);
-		else if (item == mItemFace40)
-			setMinFaceSize(0.4f);
-		else if (item == mItemFace30)
-			setMinFaceSize(0.3f);
-		else if (item == mItemFace20)
-			setMinFaceSize(0.2f);
-		else if (item == mItemType) {
-			int tmpDetectorType = (mDetectorType + 1) % mDetectorName.length;
-			item.setTitle(mDetectorName[tmpDetectorType]);
-		}
-		return true;
-	}
-
-	private void setMinFaceSize(float faceSize) {
-		mRelativeFaceSize = faceSize;
-		mAbsoluteFaceSize = 0;
-	}
-
 	private Rect match_eye(Rect area, Mat mTemplate, int type) {
 		Point matchLoc;
 		Mat mROI = mGray.submat(area);
 		int result_cols = mROI.cols() - mTemplate.cols() + 1;
 		int result_rows = mROI.rows() - mTemplate.rows() + 1;
-		// Check for bad template size
 		if (mTemplate.cols() == 0 || mTemplate.rows() == 0) {
 			return null;
 		}
