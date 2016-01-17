@@ -223,7 +223,10 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_question, container, false);
+		View view = inflater.inflate(R.layout.fragment_question, container, false);
+		mOpenCvCameraView = (CameraBridgeViewBase) view.findViewById(R.id.fd_activity_surface_view);
+		mOpenCvCameraView.setCvCameraViewListener(this);
+		return view;
 	}
 
 	@Override
@@ -246,17 +249,14 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 		pbAnswer2 = (ArcProgress) view.findViewById(R.id.pb_answer_2);
 		pbAnswer3 = (ArcProgress) view.findViewById(R.id.pb_answer_3);
 		pbAnswer4 = (ArcProgress) view.findViewById(R.id.pb_answer_4);
-		if (mQuestion == null) {
-			return;
+		if (mQuestion != null) {
+			setUpText(txtMessage, mQuestion.getQuestion());
+			setUpText(txtAnswer1, mQuestion.getAnswerFirst().getMessage());
+			setUpText(txtAnswer2, mQuestion.getAnswerSecond().getMessage());
+			setUpText(txtAnswer3, mQuestion.getAnswerThird().getMessage());
+			setUpText(txtAnswer4, mQuestion.getAnswerFourth().getMessage());
 		}
-		setUpText(txtMessage, mQuestion.getQuestion());
-		setUpText(txtAnswer1, mQuestion.getAnswerFirst().getMessage());
-		setUpText(txtAnswer2, mQuestion.getAnswerSecond().getMessage());
-		setUpText(txtAnswer3, mQuestion.getAnswerThird().getMessage());
-		setUpText(txtAnswer4, mQuestion.getAnswerFourth().getMessage());
 
-		mOpenCvCameraView = (CameraBridgeViewBase) view.findViewById(R.id.fd_activity_surface_view);
-		mOpenCvCameraView.setCvCameraViewListener(this);
 
 		mViewFlipper = (ViewFlipper) view.findViewById(R.id.view_flipper);
 		mViewFlipper.setOnClickListener(this);
@@ -375,7 +375,7 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 	public void onResume() {
 		super.onResume();
 		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_11, getActivity(),
-                mLoaderCallback);
+				mLoaderCallback);
 	}
 
 	@Override
@@ -506,32 +506,7 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 		return EYES_POSITION_IDLE;
 	}
 
-	private void printDirection(final int direction) {
-		getActivity().runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				String message = null;
-				switch (direction) {
-					case 0:
-						message = "NONE";
-						break;
-					case 1:
-						message = "RIGHT";
-						break;
-					case 2:
-						message = "LEFT";
-						break;
-					case 3:
-						message = "TOP";
-						break;
-					case 4:
-						message = "BOTTOM";
-						break;
-				}
-				mTxtDirection.setText(message != null ? message : "");
-			}
-		});
-	}
+
 
 	private Rect match_eye(Rect area, Mat mTemplate, int type) {
 		Point matchLoc;
@@ -623,12 +598,37 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 	}
 
 	private void showProgressBar(final ArcProgress arcProgress, final int position) {
+		if (mQuestion == null)
+			return;
 
 		getActivity().runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				final long length_in_milliseconds = 5000;
 				final long period_in_milliseconds = 200;
+
+				switch (position) {
+					case EYES_POSITION_TOP:
+						pbAnswer2.setProgress(0);
+						pbAnswer3.setProgress(0);
+						pbAnswer4.setProgress(0);
+						break;
+					case EYES_POSITION_RIGHT:
+						pbAnswer1.setProgress(0);
+						pbAnswer3.setProgress(0);
+						pbAnswer4.setProgress(0);
+						break;
+					case EYES_POSITION_BOTTOM:
+						pbAnswer1.setProgress(0);
+						pbAnswer2.setProgress(0);
+						pbAnswer4.setProgress(0);
+						break;
+					case EYES_POSITION_LEFT:
+						pbAnswer1.setProgress(0);
+						pbAnswer3.setProgress(0);
+						pbAnswer2.setProgress(0);
+						break;
+				}
 
 				countDownTimer = new CountDownTimer(length_in_milliseconds, period_in_milliseconds) {
                     
@@ -650,16 +650,24 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
                                 switch (position) {
                                     case 1:
                                     default:
-                                        mQuestion.getAnswerFirst().setCorrect(true);
+										if (mQuestion.getAnswerFirst() != null) {
+											mQuestion.getAnswerFirst().setCorrect(true);
+										}
                                         break;
                                     case 2:
-                                        mQuestion.getAnswerSecond().setCorrect(true);
+										if (mQuestion.getAnswerSecond() != null) {
+											mQuestion.getAnswerSecond().setCorrect(true);
+										}
                                         break;
                                     case 3:
-                                        mQuestion.getAnswerThird().setCorrect(true);
+										if(mQuestion.getAnswerThird() != null) {
+											mQuestion.getAnswerThird().setCorrect(true);
+										}
                                         break;
                                     case 4:
-                                        mQuestion.getAnswerFourth().setCorrect(true);
+										if(mQuestion.getAnswerFourth() != null) {
+											mQuestion.getAnswerFourth().setCorrect(true);
+										}
                                         break;
                                 }
                                 mListener.onAnswerSelected(mQuestion);
