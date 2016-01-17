@@ -1,6 +1,7 @@
 package com.hackathon.healthtech.eyeassistant.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -26,7 +27,6 @@ import com.google.android.gms.nearby.connection.Connections;
 import com.google.android.gms.nearby.connection.ConnectionsStatusCodes;
 import com.hackathon.healthtech.eyeassistant.R;
 import com.hackathon.healthtech.eyeassistant.dialogs.MyListDialog;
-import com.hackathon.healthtech.eyeassistant.entities.Answer;
 import com.hackathon.healthtech.eyeassistant.entities.Question;
 import com.hackathon.healthtech.eyeassistant.fragments.AskFragment;
 import com.hackathon.healthtech.eyeassistant.fragments.FillInAnswersFragment;
@@ -379,6 +379,7 @@ public class ConnectionActivity extends BaseActivity implements
         updateViewVisibility(STATE_IDLE);
     }
 
+    @Deprecated
     private void disconnect() {
         debugLog("disconnect from:" + mOtherEndpointId);
         if (!TextUtils.isEmpty(mOtherEndpointId)) {
@@ -441,8 +442,9 @@ public class ConnectionActivity extends BaseActivity implements
 //            case android.R.id.home:
 //                drawerLayout.openDrawer(GravityCompat.START);
 //                return true;
-            case R.id.action_disconnect:
-                disconnect();
+            case R.id.action_change_role:
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
                 return true;
             case R.id.action_discover:
                 startDiscovery();
@@ -468,11 +470,11 @@ public class ConnectionActivity extends BaseActivity implements
 
     @Override
     public void onClickHistory() {
-        mQuestion = new Question("Question full text?");
-        mQuestion.setAnswerFirst(new Answer("Answer1"));
-        mQuestion.setAnswerSecond(new Answer("Answer2"));
-        mQuestion.setAnswerThird(new Answer("Answer3"));
-        mQuestion.setAnswerFourth(new Answer("Answer4"));
+//        mQuestion = new Question("Question full text?");
+//        mQuestion.setAnswerFirst(new Answer("Answer1"));
+//        mQuestion.setAnswerSecond(new Answer("Answer2"));
+//        mQuestion.setAnswerThird(new Answer("Answer3"));
+//        mQuestion.setAnswerFourth(new Answer("Answer4"));
         replaceFragment(QuestionFragment.newInstance(mQuestion));
     }
 
