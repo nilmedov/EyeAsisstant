@@ -442,11 +442,12 @@ public class ConnectionActivity extends BaseActivity implements
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
                 return true;
-            case R.id.action_discover:
-                startDiscovery();
-                return true;
             case R.id.action_advertise:
-                startAdvertising();
+                if (isPatient()) {
+                    startAdvertising();
+                } else {
+                    startDiscovery();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
