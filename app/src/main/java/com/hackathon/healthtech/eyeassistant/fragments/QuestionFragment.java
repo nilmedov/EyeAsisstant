@@ -609,16 +609,24 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 
 				switch (position) {
 					case EYES_POSITION_TOP:
-						pbAnswer1.setProgress(0);
+						pbAnswer2.setProgress(0);
+						pbAnswer3.setProgress(0);
+						pbAnswer4.setProgress(0);
 						break;
 					case EYES_POSITION_RIGHT:
-						pbAnswer2.setProgress(0);
+						pbAnswer1.setProgress(0);
+						pbAnswer3.setProgress(0);
+						pbAnswer4.setProgress(0);
 						break;
 					case EYES_POSITION_BOTTOM:
-						pbAnswer3.setProgress(0);
+						pbAnswer1.setProgress(0);
+						pbAnswer2.setProgress(0);
+						pbAnswer4.setProgress(0);
 						break;
 					case EYES_POSITION_LEFT:
-						pbAnswer4.setProgress(0);
+						pbAnswer1.setProgress(0);
+						pbAnswer3.setProgress(0);
+						pbAnswer2.setProgress(0);
 						break;
 				}
 
