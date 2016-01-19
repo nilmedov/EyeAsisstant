@@ -1,8 +1,178 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  android:orientation="vertical"
-			  android:layout_width="match_parent"
-			  android:layout_height="match_parent">
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:custom="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+
+	<TextView
+		android:id="@+id/txt_message"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="50dp"
+		style="@style/TextViewStyle.Header"
+		android:text="@string/sample"/>
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_alignParentBottom="true"
+		android:padding="40dp"
+		android:id="@+id/container_answers"
+		android:layout_below="@+id/txt_message">
+
+		<RelativeLayout
+			android:id="@+id/container_1"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentTop="true"
+			android:layout_centerHorizontal="true">
+
+			<TextView
+				android:id="@+id/txt_digit_1"
+				style="@style/answerStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerInParent="true"
+				android:text="1"/>
+
+			<TextView
+				android:id="@+id/txt_answer_1"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_below="@+id/txt_digit_1"
+				android:layout_centerHorizontal="true"
+				android:text="ddfdfddg"/>
+
+			<com.github.lzyzsd.circleprogress.ArcProgress
+				android:id="@+id/pb_answer_1"
+				android:layout_width="100dp"
+				android:layout_height="100dp"
+				android:layout_centerHorizontal="true"
+				custom:arc_unfinished_color="@android:color/transparent"
+				custom:arc_text_color="@android:color/transparent"
+				custom:arc_progress="0"
+				/>
+		</RelativeLayout>
+
+		<RelativeLayout
+			android:id="@+id/container_2"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerVertical="true"
+			android:layout_alignParentRight="true">
+
+			<TextView
+				android:id="@+id/txt_digit_2"
+				style="@style/answerStyle"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_centerInParent="true"
+				android:gravity="center"
+				android:layout_alignTop="@+id/pb_answer_2"
+				android:layout_alignLeft="@+id/pb_answer_2"
+				android:layout_alignRight="@+id/pb_answer_2"
+				android:layout_alignBottom="@+id/txt_answer_2"
+				android:text="2"/>
+
+			<TextView
+				android:id="@+id/txt_answer_2"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerHorizontal="true"
+				android:layout_alignParentBottom="false"
+				android:layout_below="@+id/pb_answer_2"
+				android:text="ddfdfddg"/>
+
+			<com.github.lzyzsd.circleprogress.ArcProgress
+				android:id="@+id/pb_answer_2"
+				android:layout_width="100dp"
+				android:layout_height="100dp"
+				android:layout_centerHorizontal="true"
+				custom:arc_unfinished_color="@android:color/transparent"
+				custom:arc_text_color="@android:color/transparent"
+				custom:arc_progress="0"/>
+
+		</RelativeLayout>
+
+		<RelativeLayout
+			android:id="@+id/container_3"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:layout_centerHorizontal="true">
+
+			<TextView
+				android:id="@+id/txt_digit_3"
+				style="@style/answerStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerInParent="true"
+				android:text="3"/>
+
+			<TextView
+				android:id="@+id/txt_answer_3"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_below="@+id/txt_digit_3"
+				android:layout_centerHorizontal="true"
+				android:text="ddfdfddg"/>
+
+			<com.github.lzyzsd.circleprogress.ArcProgress
+				android:id="@+id/pb_answer_3"
+				android:layout_width="100dp"
+				android:layout_height="100dp"
+				android:layout_centerInParent="true"
+				custom:arc_unfinished_color="@android:color/transparent"
+				custom:arc_text_color="@android:color/transparent"
+				custom:arc_progress="0"
+				/>
+
+		</RelativeLayout>
+
+		<RelativeLayout
+			android:id="@+id/container_4"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true">
+
+			<TextView
+				android:id="@+id/txt_digit_4"
+				style="@style/answerStyle"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_centerInParent="true"
+				android:text="4"
+				android:layout_alignTop="@+id/pb_answer_4"
+				android:layout_alignLeft="@+id/pb_answer_4"
+				android:layout_alignRight="@+id/pb_answer_4"
+				android:layout_alignBottom="@+id/txt_answer_4"
+				android:gravity="center"/>
+
+			<TextView
+				android:id="@+id/txt_answer_4"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerHorizontal="true"
+				android:text="ddfdfddg"
+				android:layout_alignParentBottom="false"
+				android:layout_below="@+id/pb_answer_4"/>
 
 
-</LinearLayout>
+			<com.github.lzyzsd.circleprogress.ArcProgress
+				android:id="@+id/pb_answer_4"
+				android:layout_width="100dp"
+				android:layout_height="100dp"
+				android:layout_centerHorizontal="true"
+				custom:arc_unfinished_color="@android:color/transparent"
+				custom:arc_text_color="@android:color/transparent"
+				custom:arc_progress="0"
+				style="@style/answerStyle"/>
+		</RelativeLayout>
+	</RelativeLayout>
+
+	<!--android.support.design.widget.FloatingActionButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"/-->
+</RelativeLayout>

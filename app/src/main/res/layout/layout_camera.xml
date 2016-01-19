@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 				android:layout_width="match_parent"
-				android:layout_height="match_parent">
+				android:layout_height="match_parent"
+				xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<org.opencv.android.JavaCameraView
 		android:id="@+id/fd_activity_surface_view"
@@ -31,5 +32,15 @@
 		android:paddingRight="10dip"
 		android:progress="500">
 	</SeekBar>
+
+	<android.support.design.widget.FloatingActionButton
+		android:id="@+id/fab_calibrate"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentRight="true"
+		android:layout_margin="40dp"
+		app:elevation="6dp"
+		android:src="@drawable/ic_refresh"/>
 
 </RelativeLayout>
