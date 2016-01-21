@@ -8,6 +8,7 @@
     <string name="debug_label">DEBUG</string>
     <string name="send">Send</string>
     <string name="message">Message</string>
+    <string name="ok">OK</string>
 
     <string name="title_activity_question">QuestionActivity</string>
     <string name="dummy_button">Dummy Button</string>

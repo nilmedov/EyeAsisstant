@@ -18,6 +18,7 @@ import android.widget.ViewFlipper;
 
 import com.github.lzyzsd.circleprogress.ArcProgress;
 import com.hackathon.healthtech.eyeassistant.R;
+import com.hackathon.healthtech.eyeassistant.activities.ConnectionActivity;
 import com.hackathon.healthtech.eyeassistant.entities.Question;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -460,7 +461,7 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 				if (leftEyeCalibrated != null && rightEyeCalibrated != null && leftEye != null && rightEye != null) {
 					int currentEyesPosition = checkEyesPosition(leftEye, rightEye);
 					if (currentEyesPosition != EYES_POSITION_IDLE) {
-						if (isTimerFinished) {
+						if (isTimerFinished && !((ConnectionActivity) getActivity()).isAnswered) {
 							switch (currentEyesPosition) {
 								case EYES_POSITION_TOP:
 									showProgressBar(pbAnswer1, currentEyesPosition);
@@ -634,6 +635,7 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
                     
                     @Override
                     public void onTick(long millisUntilFinished_) {
+						isTimerFinished = false;
                         float f = ((float) (length_in_milliseconds - millisUntilFinished_)) / length_in_milliseconds * 100;
                         arcProgress.setProgress(Math.round(f));
                     }
