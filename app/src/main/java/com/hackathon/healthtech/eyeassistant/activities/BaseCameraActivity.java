@@ -260,29 +260,29 @@ public abstract class BaseCameraActivity extends AppCompatActivity implements Ca
 				rightEye = match_eye(eyearea_right, teplateR, method);
 				leftEye = match_eye(eyearea_left, teplateL, method);
 
-				if (leftEyeCalibrated != null && rightEyeCalibrated != null && leftEye != null && rightEye != null) {
-					int currentEyesPosition = checkEyesPosition(leftEye, rightEye);
-					if (currentEyesPosition != EYES_POSITION_IDLE) {
-						if (isTimerFinished) {
-							switch (currentEyesPosition) {
-								case EYES_POSITION_TOP:
-									showProgressBar(pbAnswer1, currentEyesPosition);
-									break;
-								case EYES_POSITION_RIGHT:
-									showProgressBar(pbAnswer2, currentEyesPosition);
-									break;
-								case EYES_POSITION_BOTTOM:
-									showProgressBar(pbAnswer3, currentEyesPosition);
-									break;
-								case EYES_POSITION_LEFT:
-									showProgressBar(pbAnswer4, currentEyesPosition);
-									break;
-							}
-						}
-					} else {
-						stopTimer();
-					}
-				}
+//				if (leftEyeCalibrated != null && rightEyeCalibrated != null && leftEye != null && rightEye != null) {
+//					int currentEyesPosition = checkEyesPosition(leftEye, rightEye);
+//					if (currentEyesPosition != EYES_POSITION_IDLE) {
+//						if (isTimerFinished) {
+//							switch (currentEyesPosition) {
+//								case EYES_POSITION_TOP:
+//									showProgressBar(pbAnswer1, currentEyesPosition);
+//									break;
+//								case EYES_POSITION_RIGHT:
+//									showProgressBar(pbAnswer2, currentEyesPosition);
+//									break;
+//								case EYES_POSITION_BOTTOM:
+//									showProgressBar(pbAnswer3, currentEyesPosition);
+//									break;
+//								case EYES_POSITION_LEFT:
+//									showProgressBar(pbAnswer4, currentEyesPosition);
+//									break;
+//							}
+//						}
+//					} else {
+//						stopTimer();
+//					}
+//				}
 			}
 		}
 		return mRgba;

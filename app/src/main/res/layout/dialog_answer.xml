@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@android:color/transparent"
+	android:paddingLeft="30dp"
+	android:paddingRight="30dp">
+
+	<RelativeLayout
+		android:layout_centerInParent="true"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@color/colorPrimary">
+
+		<TextView
+			android:id="@+id/txt_question"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center_horizontal"
+			android:textSize="22sp"
+			android:layout_marginBottom="20dp"/>
+
+		<TextView
+			android:id="@+id/txt_answer"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/txt_question"
+			android:textSize="20sp"
+			android:layout_marginBottom="20dp"/>
+
+		<Button
+			android:id="@+id/btn_ok"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/txt_answer"
+			android:gravity="center_horizontal"
+			android:textSize="24dp"
+			android:textColor="@android:color/white"
+			android:text="@string/ok"/>
+
+	</RelativeLayout>
+</RelativeLayout>
