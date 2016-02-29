@@ -91,12 +91,7 @@ public class ConnectionActivity extends BaseActivity implements
 
 		findViewById(R.id.content_container);
 		fab = (FloatingActionButton) findViewById(R.id.fab_send);
-		fab.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				replaceFragment(FillInQuestionFragment.newInstance());
-			}
-		});
+		fab.setOnClickListener(v -> replaceFragment(FillInQuestionFragment.newInstance()));
 		if (!isPatient()) {
 			fab.setVisibility(View.VISIBLE);
 		}
@@ -215,24 +210,21 @@ public class ConnectionActivity extends BaseActivity implements
 		// Discover nearby apps that are advertising with the required service ID.
 		String serviceId = getString(R.string.nearby_service_id);
 		Nearby.Connections.startDiscovery(mGoogleApiClient, serviceId, TIMEOUT_DISCOVER, this)
-				.setResultCallback(new ResultCallback<Status>() {
-					@Override
-					public void onResult(Status status) {
-						if (status.isSuccess()) {
-							debugLog("startDiscovery:onResult: SUCCESS");
+				.setResultCallback(status -> {
+					if (status.isSuccess()) {
+						debugLog("startDiscovery:onResult: SUCCESS");
 
-							updateViewVisibility(STATE_DISCOVERING);
+						updateViewVisibility(STATE_DISCOVERING);
+					} else {
+						debugLog("startDiscovery:onResult: FAILURE");
+
+						// If the user hits 'Discover' multiple times in the timeout window,
+						// the error will be STATUS_ALREADY_DISCOVERING
+						int statusCode = status.getStatusCode();
+						if (statusCode == ConnectionsStatusCodes.STATUS_ALREADY_DISCOVERING) {
+							debugLog("STATUS_ALREADY_DISCOVERING");
 						} else {
-							debugLog("startDiscovery:onResult: FAILURE");
-
-							// If the user hits 'Discover' multiple times in the timeout window,
-							// the error will be STATUS_ALREADY_DISCOVERING
-							int statusCode = status.getStatusCode();
-							if (statusCode == ConnectionsStatusCodes.STATUS_ALREADY_DISCOVERING) {
-								debugLog("STATUS_ALREADY_DISCOVERING");
-							} else {
-								updateViewVisibility(STATE_READY);
-							}
+							updateViewVisibility(STATE_READY);
 						}
 					}
 				});
@@ -254,21 +246,17 @@ public class ConnectionActivity extends BaseActivity implements
 		String myName = null;
 		byte[] myPayload = null;
 		Nearby.Connections.sendConnectionRequest(mGoogleApiClient, myName, endpointId, myPayload,
-				new Connections.ConnectionResponseCallback() {
-					@Override
-					public void onConnectionResponse(String endpointId, Status status,
-													 byte[] bytes) {
-						Log.d(TAG, "onConnectionResponse:" + endpointId + ":" + status);
-						if (status.isSuccess()) {
-							debugLog("onConnectionResponse: " + endpointName + " SUCCESS");
-							Toast.makeText(ConnectionActivity.this, "Connected to " + endpointName,
-									Toast.LENGTH_SHORT).show();
+				(endpointId1, status, bytes) -> {
+					Log.d(TAG, "onConnectionResponse:" + endpointId1 + ":" + status);
+					if (status.isSuccess()) {
+						debugLog("onConnectionResponse: " + endpointName + " SUCCESS");
+						Toast.makeText(ConnectionActivity.this, "Connected to " + endpointName,
+								Toast.LENGTH_SHORT).show();
 
-							mOtherEndpointId = endpointId;
-							updateViewVisibility(STATE_CONNECTED);
-						} else {
-							debugLog("onConnectionResponse: " + endpointName + " FAILURE");
-						}
+						mOtherEndpointId = endpointId1;
+						updateViewVisibility(STATE_CONNECTED);
+					} else {
+						debugLog("onConnectionResponse: " + endpointName + " FAILURE");
 					}
 				}, this);
 	}
@@ -348,23 +336,17 @@ public class ConnectionActivity extends BaseActivity implements
 			AlertDialog.Builder builder = new AlertDialog.Builder(this)
 					.setTitle("Endpoint(s) Found")
 					.setCancelable(true)
-					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							mMyListDialog.dismiss();
-						}
+					.setNegativeButton("Cancel", (dialog, which) -> {
+						mMyListDialog.dismiss();
 					});
 
 			// Create the MyListDialog with a listener
-			mMyListDialog = new MyListDialog(this, builder, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					String selectedEndpointName = mMyListDialog.getItemKey(which);
-					String selectedEndpointId = mMyListDialog.getItemValue(which);
+			mMyListDialog = new MyListDialog(this, builder, (dialog, which) -> {
+				String selectedEndpointName = mMyListDialog.getItemKey(which);
+				String selectedEndpointId = mMyListDialog.getItemValue(which);
 
-					ConnectionActivity.this.connectTo(selectedEndpointId, selectedEndpointName);
-					mMyListDialog.dismiss();
-				}
+				ConnectionActivity.this.connectTo(selectedEndpointId, selectedEndpointName);
+				mMyListDialog.dismiss();
 			});
 		}
 

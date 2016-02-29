@@ -15,13 +15,10 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                SplashActivity.this.startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                SplashActivity.this.finish();
-            }
-        }, splashDelay);
+        handler.postDelayed(() -> {
+			SplashActivity.this.startActivity(new Intent(SplashActivity.this, MainActivity.class));
+			SplashActivity.this.finish();
+		}, splashDelay);
     }
 
     @Override

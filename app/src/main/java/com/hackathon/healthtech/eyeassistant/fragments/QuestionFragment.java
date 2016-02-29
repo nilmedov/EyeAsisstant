@@ -59,7 +59,7 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 	private static final int EYES_POSITION_TOP = 1;
 	private static final int EYES_POSITION_BOTTOM = 3;
 
-//	@Retention(RetentionPolicy.CLASS)
+	//	@Retention(RetentionPolicy.CLASS)
 //	@IntDef({EYES_POSITION_IDLE, EYES_POSITION_LEFT, EYES_POSITION_RIGHT, EYES_POSITION_TOP, EYES_POSITION_BOTTOM})
 //	public @interface EyesPosition {
 //	}
@@ -91,7 +91,7 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 	private int mAbsoluteFaceSize = 0;
 
 	private CameraBridgeViewBase mOpenCvCameraView;
-//
+	//
 	private ViewFlipper mViewFlipper;
 	private TextView mValue, mTxtDirection;
 
@@ -508,7 +508,6 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 	}
 
 
-
 	private Rect match_eye(Rect area, Mat mTemplate, int type) {
 		Point matchLoc;
 		Mat mROI = mGray.submat(area);
@@ -557,7 +556,7 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 
 		Core.rectangle(mRgba, matchLoc_tx, matchLoc_ty, new Scalar(255, 255, 0,
 				255));
-		return new Rect(matchLoc_tx,matchLoc_ty);
+		return new Rect(matchLoc_tx, matchLoc_ty);
 	}
 
 	private Mat get_template(CascadeClassifier clasificator, Rect area, int size) {
@@ -572,7 +571,7 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 				new Size());
 
 		Rect[] eyesArray = eyes.toArray();
-		for (int i = 0; i < eyesArray.length;) {
+		for (int i = 0; i < eyesArray.length; ) {
 			Rect e = eyesArray[i];
 			e.x = area.x + e.x;
 			e.y = area.y + e.y;
@@ -602,82 +601,79 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 		if (mQuestion == null)
 			return;
 
-		getActivity().runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				final long length_in_milliseconds = 5000;
-				final long period_in_milliseconds = 200;
+		getActivity().runOnUiThread(() -> {
+			final long length_in_milliseconds = 5000;
+			final long period_in_milliseconds = 200;
 
-				switch (position) {
-					case EYES_POSITION_TOP:
-						pbAnswer2.setProgress(0);
-						pbAnswer3.setProgress(0);
-						pbAnswer4.setProgress(0);
-						break;
-					case EYES_POSITION_RIGHT:
-						pbAnswer1.setProgress(0);
-						pbAnswer3.setProgress(0);
-						pbAnswer4.setProgress(0);
-						break;
-					case EYES_POSITION_BOTTOM:
-						pbAnswer1.setProgress(0);
-						pbAnswer2.setProgress(0);
-						pbAnswer4.setProgress(0);
-						break;
-					case EYES_POSITION_LEFT:
-						pbAnswer1.setProgress(0);
-						pbAnswer3.setProgress(0);
-						pbAnswer2.setProgress(0);
-						break;
+			switch (position) {
+				case EYES_POSITION_TOP:
+					pbAnswer2.setProgress(0);
+					pbAnswer3.setProgress(0);
+					pbAnswer4.setProgress(0);
+					break;
+				case EYES_POSITION_RIGHT:
+					pbAnswer1.setProgress(0);
+					pbAnswer3.setProgress(0);
+					pbAnswer4.setProgress(0);
+					break;
+				case EYES_POSITION_BOTTOM:
+					pbAnswer1.setProgress(0);
+					pbAnswer2.setProgress(0);
+					pbAnswer4.setProgress(0);
+					break;
+				case EYES_POSITION_LEFT:
+					pbAnswer1.setProgress(0);
+					pbAnswer3.setProgress(0);
+					pbAnswer2.setProgress(0);
+					break;
+			}
+
+			countDownTimer = new CountDownTimer(length_in_milliseconds, period_in_milliseconds) {
+
+				@Override
+				public void onTick(long millisUntilFinished_) {
+					isTimerFinished = false;
+					float f = ((float) (length_in_milliseconds - millisUntilFinished_)) / length_in_milliseconds * 100;
+					arcProgress.setProgress(Math.round(f));
 				}
 
-				countDownTimer = new CountDownTimer(length_in_milliseconds, period_in_milliseconds) {
-                    
-                    @Override
-                    public void onTick(long millisUntilFinished_) {
-						isTimerFinished = false;
-                        float f = ((float) (length_in_milliseconds - millisUntilFinished_)) / length_in_milliseconds * 100;
-                        arcProgress.setProgress(Math.round(f));
-                    }
-
-					@Override
-					public void onFinish() {
-						// do whatever when the bar is full
-						isTimerFinished = true;
-						if (getActivity() != null) {
-							Toast.makeText(getActivity(), String.valueOf(position), Toast.LENGTH_SHORT).show();
-                            int max = arcProgress.getMax();
-                            arcProgress.setProgress(max);
-                            if (mListener != null) {
-                                switch (position) {
-                                    case 1:
-                                    default:
-										if (mQuestion.getAnswerFirst() != null) {
-											mQuestion.getAnswerFirst().setCorrect(true);
-										}
-                                        break;
-                                    case 2:
-										if (mQuestion.getAnswerSecond() != null) {
-											mQuestion.getAnswerSecond().setCorrect(true);
-										}
-                                        break;
-                                    case 3:
-										if(mQuestion.getAnswerThird() != null) {
-											mQuestion.getAnswerThird().setCorrect(true);
-										}
-                                        break;
-                                    case 4:
-										if(mQuestion.getAnswerFourth() != null) {
-											mQuestion.getAnswerFourth().setCorrect(true);
-										}
-                                        break;
-                                }
-                                mListener.onAnswerSelected(mQuestion);
-                            }
+				@Override
+				public void onFinish() {
+					// do whatever when the bar is full
+					isTimerFinished = true;
+					if (getActivity() != null) {
+						Toast.makeText(getActivity(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+						int max = arcProgress.getMax();
+						arcProgress.setProgress(max);
+						if (mListener != null) {
+							switch (position) {
+								case 1:
+								default:
+									if (mQuestion.getAnswerFirst() != null) {
+										mQuestion.getAnswerFirst().setCorrect(true);
+									}
+									break;
+								case 2:
+									if (mQuestion.getAnswerSecond() != null) {
+										mQuestion.getAnswerSecond().setCorrect(true);
+									}
+									break;
+								case 3:
+									if (mQuestion.getAnswerThird() != null) {
+										mQuestion.getAnswerThird().setCorrect(true);
+									}
+									break;
+								case 4:
+									if (mQuestion.getAnswerFourth() != null) {
+										mQuestion.getAnswerFourth().setCorrect(true);
+									}
+									break;
+							}
+							mListener.onAnswerSelected(mQuestion);
 						}
 					}
-				}.start();
-			}
+				}
+			}.start();
 		});
 	}
 
@@ -685,22 +681,18 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 		if (countDownTimer != null) {
 			countDownTimer.cancel();
 			isTimerFinished = true;
-			getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					pbAnswer1.setProgress(0);
-					pbAnswer2.setProgress(0);
-					pbAnswer3.setProgress(0);
-					pbAnswer4.setProgress(0);
-				}
+			getActivity().runOnUiThread(() -> {
+				pbAnswer1.setProgress(0);
+				pbAnswer2.setProgress(0);
+				pbAnswer3.setProgress(0);
+				pbAnswer4.setProgress(0);
 			});
 		}
 	}
-    
- 
 
-    public interface OnFragmentInteractionListener {
-        void onAnswerSelected(Question question);
-    }
+
+	public interface OnFragmentInteractionListener {
+		void onAnswerSelected(Question question);
+	}
 
 }
