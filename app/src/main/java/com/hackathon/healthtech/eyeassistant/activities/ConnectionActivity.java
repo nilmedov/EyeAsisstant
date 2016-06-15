@@ -272,27 +272,21 @@ public class ConnectionActivity extends BaseActivity implements
 				.setTitle("Connection Request")
 				.setMessage("Do you want to connect to " + endpointName + "?")
 				.setCancelable(false)
-				.setPositiveButton("Connect", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						byte[] payload = null;
-						Nearby.Connections.acceptConnectionRequest(mGoogleApiClient, endpointId,
-								payload, ConnectionActivity.this)
-								.setResultCallback(new ResultCallback<Status>() {
-									@Override
-									public void onResult(Status status) {
-										if (status.isSuccess()) {
-											debugLog("acceptConnectionRequest: SUCCESS");
+				.setPositiveButton("Connect", (dialog, which) -> {
+                    byte[] payload1 = null;
+                    Nearby.Connections.acceptConnectionRequest(mGoogleApiClient, endpointId,
+							payload1, ConnectionActivity.this)
+                            .setResultCallback(status -> {
+                                if (status.isSuccess()) {
+                                    debugLog("acceptConnectionRequest: SUCCESS");
 
-											mOtherEndpointId = endpointId;
-											updateViewVisibility(STATE_CONNECTED);
-										} else {
-											debugLog("acceptConnectionRequest: FAILURE");
-										}
-									}
-								});
-					}
-				})
+                                    mOtherEndpointId = endpointId;
+                                    updateViewVisibility(STATE_CONNECTED);
+                                } else {
+                                    debugLog("acceptConnectionRequest: FAILURE");
+                                }
+                            });
+                })
 				.setNegativeButton("No", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -443,9 +437,6 @@ public class ConnectionActivity extends BaseActivity implements
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-//            case android.R.id.home:
-//                drawerLayout.openDrawer(GravityCompat.START);
-//                return true;
 			case R.id.action_change_role:
 				startActivity(new Intent(this, MainActivity.class));
 				finish();
@@ -476,11 +467,6 @@ public class ConnectionActivity extends BaseActivity implements
 
 	@Override
 	public void onClickHistory() {
-//        mQuestion = new Question("Question full text?");
-//        mQuestion.setAnswerFirst(new Answer("Answer1"));
-//        mQuestion.setAnswerSecond(new Answer("Answer2"));
-//        mQuestion.setAnswerThird(new Answer("Answer3"));
-//        mQuestion.setAnswerFourth(new Answer("Answer4"));
 		replaceFragment(QuestionFragment.newInstance(mQuestion));
 	}
 

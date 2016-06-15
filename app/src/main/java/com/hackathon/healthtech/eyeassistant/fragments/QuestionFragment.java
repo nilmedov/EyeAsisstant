@@ -59,14 +59,6 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 	private static final int EYES_POSITION_TOP = 1;
 	private static final int EYES_POSITION_BOTTOM = 3;
 
-	//	@Retention(RetentionPolicy.CLASS)
-//	@IntDef({EYES_POSITION_IDLE, EYES_POSITION_LEFT, EYES_POSITION_RIGHT, EYES_POSITION_TOP, EYES_POSITION_BOTTOM})
-//	public @interface EyesPosition {
-//	}
-//
-//	@EyesPosition
-	private int mEyesPosition = EYES_POSITION_IDLE;
-
 	private static final int EYE_AREA_WIDTH_CONST = 8;
 	private static final float EYE_AREA_HEIGHT_CONST = 4.5f;
 
@@ -97,17 +89,6 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 
 	private Rect leftEyeCalibrated, rightEyeCalibrated;
 
-//	private Handler mHandler = new Handler();
-//	private Runnable mRunnable = new Runnable() {
-//		@Override
-//		public void run() {
-//			learn_frames = 0;
-//
-//			long timePerUpdate = 5000;
-//			mHandler.postDelayed(mRunnable, timePerUpdate);
-//		}
-//	};
-
 	double xCenter = -1;
 	double yCenter = -1;
 
@@ -117,8 +98,6 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 			switch (status) {
 				case LoaderCallbackInterface.SUCCESS: {
 					Log.i(TAG, "OpenCV loaded successfully");
-
-
 					try {
 						// load cascade file from application resources
 						InputStream is = getResources().openRawResource(
@@ -443,8 +422,8 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 			final Rect leftEye;
 			final Rect rightEye;
 			if (learn_frames < 5) {
-				teplateR = get_template(mJavaDetectorEye, eyearea_right, 24);
-				teplateL = get_template(mJavaDetectorEye, eyearea_left, 24);
+				teplateR = getTemplate(mJavaDetectorEye, eyearea_right, 24);
+				teplateL = getTemplate(mJavaDetectorEye, eyearea_left, 24);
 				learn_frames++;
 				if (learn_frames == 5) {
 					leftEyeCalibrated = match_eye(eyearea_left, teplateR, method);
@@ -559,12 +538,12 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 		return new Rect(matchLoc_tx, matchLoc_ty);
 	}
 
-	private Mat get_template(CascadeClassifier clasificator, Rect area, int size) {
+	private Mat getTemplate(CascadeClassifier clasificator, Rect area, int size) {
 		Mat template = new Mat();
 		Mat mROI = mGray.submat(area);
 		MatOfRect eyes = new MatOfRect();
 		Point iris = new Point();
-		Rect eye_template = new Rect();
+		Rect eyeTemplate = new Rect();
 		clasificator.detectMultiScale(mROI, eyes, 1.15, 2,
 				Objdetect.CASCADE_FIND_BIGGEST_OBJECT
 						| Objdetect.CASCADE_SCALE_IMAGE, new Size(30, 30),
@@ -575,23 +554,23 @@ public class QuestionFragment extends Fragment implements View.OnClickListener, 
 			Rect e = eyesArray[i];
 			e.x = area.x + e.x;
 			e.y = area.y + e.y;
-			Rect eye_only_rectangle = new Rect((int) e.tl().x,
+			Rect eyeOnlyRectangle = new Rect((int) e.tl().x,
 					(int) (e.tl().y + e.height * 0.4), (int) e.width,
 					(int) (e.height * 0.6));
-			mROI = mGray.submat(eye_only_rectangle);
-			Mat vyrez = mRgba.submat(eye_only_rectangle);
+			mROI = mGray.submat(eyeOnlyRectangle);
+			Mat vyrez = mRgba.submat(eyeOnlyRectangle);
 
 
 			Core.MinMaxLocResult mmG = Core.minMaxLoc(mROI);
 
 			Core.circle(vyrez, mmG.minLoc, 2, new Scalar(255, 255, 255, 255), 2);
-			iris.x = mmG.minLoc.x + eye_only_rectangle.x;
-			iris.y = mmG.minLoc.y + eye_only_rectangle.y;
-			eye_template = new Rect((int) iris.x - size / 2, (int) iris.y
+			iris.x = mmG.minLoc.x + eyeOnlyRectangle.x;
+			iris.y = mmG.minLoc.y + eyeOnlyRectangle.y;
+			eyeTemplate = new Rect((int) iris.x - size / 2, (int) iris.y
 					- size / 2, size, size);
-			Core.rectangle(mRgba, eye_template.tl(), eye_template.br(),
+			Core.rectangle(mRgba, eyeTemplate.tl(), eyeTemplate.br(),
 					new Scalar(255, 0, 0, 255), 2);
-			template = (mGray.submat(eye_template)).clone();
+			template = (mGray.submat(eyeTemplate)).clone();
 			return template;
 		}
 		return template;
